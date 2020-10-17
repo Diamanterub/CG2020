@@ -1,0 +1,18 @@
+body {
+    height: auto;
+    width: auto;
+    margin: 0 0;
+    background-color: grey;
+    background-image: url('../imgs/test2.png');
+    background-repeat: no-repeat;
+}
+
+#myCanvas {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background-color: white;
+}
