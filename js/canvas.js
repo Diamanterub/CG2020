@@ -3,14 +3,20 @@ const canvas = document.querySelector('#game');
 const ctx = canvas.getContext("2d");
 
 //
+let P1Right = new Image();
+P1Right.src = '../imgs/p1right.png'; //
+//
 const W = canvas.width;
 const H = canvas.height;
-const HH = HW = 60,
-    HC = 30;
+const HH = 47,
+    HW = 37,
+    HC = 18.5;
 
 let rightKey = leftKey = letterDKey = letterAKey = false;
 let x1 = W / 2;
 let x2 = W / 2;
+
+let frameIndex = 0;
 
 // Funções
 function render() {
@@ -28,7 +34,11 @@ function render() {
     //Player 1
     ctx.beginPath();
     ctx.fillStyle = "blue";
-    ctx.fillRect(x1 - HC, H - 100, HW, HH);
+    ctx.drawImage(P1Right, 23 + (frameIndex + 1) + frameIndex * 124, 32, 37, 47, x1 - HC, H - 100, 37, 47);
+    frameIndex++;
+    if (frameIndex == 2)
+        frameIndex = 0;
+    //ctx.fillRect(x1 - HC, H - 100, HW, HH);
     ctx.textAlign = 'center';
     ctx.fillText("P1", x1, H - 110);
     ctx.fill();
