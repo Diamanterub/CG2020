@@ -2,12 +2,12 @@ body {
     height: auto;
     width: auto;
     margin: 0 0;
-    background-color: grey;
-    background-image: url('../imgs/test2.png');
+    background-color: rgb(106, 106, 106);
+    background-image: url('../imgs/teste4.png');
     background-repeat: no-repeat;
 }
 
-#myCanvas {
+#game {
     position: absolute;
     top: 0;
     bottom: 0;
