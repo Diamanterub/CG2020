@@ -5,6 +5,8 @@ const ctx = canvas.getContext("2d");
 //
 let P1Right = new Image();
 P1Right.src = '../imgs/p1right.png'; //
+let P2Right = new Image();
+P2Right.src = '../imgs/p2right.png'; //
 //
 const W = canvas.width;
 const H = canvas.height;
@@ -16,8 +18,27 @@ let rightKey = leftKey = letterDKey = letterAKey = false;
 let x1 = W / 2;
 let x2 = W / 2;
 
-let frameIndex = 0;
+let frameIndex1 = 0;
+let frameIndex2 = 0;
 
+P1Right.onload = function() {
+    setInterval(breath1, 1000 / 1.9); //
+};
+P2Right.onload = function() {
+    setInterval(breath2, 1000 / 2.1); //
+};
+
+function breath1() {
+    frameIndex1++;
+    if (frameIndex1 == 2)
+        frameIndex1 = 0;
+}
+
+function breath2() {
+    frameIndex2++;
+    if (frameIndex2 == 2)
+        frameIndex2 = 0;
+}
 // Funções
 function render() {
     //Clear
@@ -25,26 +46,22 @@ function render() {
     //Draw
     //Player 2 
     ctx.beginPath();
-    ctx.fillStyle = "red";
-    ctx.fillRect(x2 - HC, H - 100, HW, HH);
+    ctx.fillStyle = "rbga(0, 0, 0, 0.5)";
+    ctx.drawImage(P2Right, 23 + (frameIndex2 + 1) + frameIndex2 * 124, 32, 37, 47, x2 - HC, H - 100, 37, 47);
+    //ctx.fillRect(x2 - HC, H - 100, HW, HH);
     ctx.textAlign = 'center';
-    ctx.fillText("P2", x2, H - 110);
+    ctx.fillText("P2", x2, H - 110 - frameIndex2);
     ctx.fill();
     ctx.closePath();
     //Player 1
     ctx.beginPath();
-    ctx.fillStyle = "blue";
-    ctx.drawImage(P1Right, 23 + (frameIndex + 1) + frameIndex * 124, 32, 37, 47, x1 - HC, H - 100, 37, 47);
-    frameIndex++;
-    if (frameIndex == 2)
-        frameIndex = 0;
+    ctx.drawImage(P1Right, 23 + (frameIndex1 + 1) + frameIndex1 * 124, 32, 37, 47, x1 - HC, H - 100, 37, 47);
     //ctx.fillRect(x1 - HC, H - 100, HW, HH);
+    ctx.fillStyle = "rbga(0, 0, 0, 0.5)";
     ctx.textAlign = 'center';
-    ctx.fillText("P1", x1, H - 110);
+    ctx.fillText("P1", x1, H - 110 - frameIndex1);
     ctx.fill();
     ctx.closePath();
-
-
 
     //Update Player 1
     if (rightKey && x1 < W - HW + HC)
