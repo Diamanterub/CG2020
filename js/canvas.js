@@ -17,107 +17,117 @@ P2Right.src = '../imgs/p2right.png'; // Sprite para o Player 2 quando se move pa
 let P2Left = new Image();
 P2Left.src = '../imgs/p2left.png'; // Sprite para o Player 2 quando se move para a esquerda
 
+// Fonte do fundo do níveis:
+// https://imgur.com/gallery/0AnOW (contém 7 gifs)
+// Estes gifs foram recortados em tamanho w em frames para criar ficheiros sprite.
+
+let B1 = new Image(); // GIF 1/7 com 7 frames 
+B1.src = '../imgs/background1.png'; // Valores: bIMGS 0 to 7 ; setInterval 1000 / 9
+
+let B2 = new Image(); // GIF 4/7 com 4 frames
+B2.src = '../imgs/background2.png'; // Valores: bIMGS 0 to 4 ; setInterval 1000 / 12
+
+let B3 = new Image(); // GIF 6/7 com 11 frames
+B3.src = '../imgs/background3.png'; // Valores: bIMGS 0 to 11 ; setInterval 1000 / 13
+
 //
 const W = canvas.width;
 const H = canvas.height;
-const HH = 47,
-    HW = 37,
-    HC = 18.5;
+const HH = 47; // Altura da Hitbox e das personagens
+const HW = 37; // Largura da hitbox e das personages
 
 let rightKey = leftKey = letterDKey = letterAKey = false;
-let x1 = W / 2;
-let x2 = W / 2;
+let x1 = W / 2; // Posição do Player 1 relativa a largura do ambiente (inicialmente no centro por default)
+let x2 = W / 2; // Posição do Player 2 relativa a largura do ambiente (inicialmente no centro por default)
 
-let frameIndex1 = 0;
-let frameIndex2 = 0;
-let frameIndex3 = 17;
-let frameIndex4 = 17;
+window.addEventListener("load", myInit, true); // Quando o ecrã é carregado, 
+function myInit() { sIPRMSB(), sIPLMSB(), sIBIMGS() }; // são acionadas as funções para o movimento e respiração das personagens.
 
-window.addEventListener("load", myInit, true);
-
-function myInit() { P1Breath(), P2Breath(), P1BL(), P2BL() };
-
-function P1Breath() {
-    setInterval(breath1, 1000 / 1.9); //
+// Tanto para o lado direito e esquerdo, são usados dois frames do sprite a cada segundo.
+function sIPRMSB() {
+    setInterval(PRMSB, 1000 / 2);
 };
 
-function P2Breath() {
-    setInterval(breath2, 1000 / 2.1); //
+function sIPLMSB() {
+    setInterval(PLMSB, 1000 / 2);
 };
 
-function P1BL() {
-    setInterval(left1, 1000 / 1.9); //
+function sIBIMGS() {
+    setInterval(BIMGS, 1000 / 13);
 };
 
-function P2BL() {
-    setInterval(left2, 1000 / 2.1); //
-};
+let pRMSB = 0; // Player Right Movement Sprite and Breath
+let pLMSB = 17; // Player Left Movement Sprite and Breath
+let bIMGS = 0; // Background Image Sprite
 
-function breath1() {
-    frameIndex1++;
-    if (frameIndex1 == 2)
-        frameIndex1 = 0;
+function BIMGS() {
+    bIMGS++;
+    if (bIMGS == 11)
+        bIMGS = 0;
 }
 
-function breath2() {
-    frameIndex2++;
-    if (frameIndex2 == 2)
-        frameIndex2 = 0;
+function PRMSB() { // No ficheiro de sprites de movimento e respiração (para a direita)
+    pRMSB++; // são usados apenas o primeiro e o segundo.
+    if (pRMSB == 2)
+        pRMSB = 0;
 }
 
-function left1() {
-    frameIndex3--;
-    if (frameIndex3 == 15)
-        frameIndex3 = 17;
+function PLMSB() { // No ficheiro de sprites de movimento e respiração (para a esquerda)
+    pLMSB--; // são usados apenas o último e o penúltimo.
+    if (pLMSB == 15)
+        pLMSB = 17;
 }
 
-function left2() {
-    frameIndex4--;
-    if (frameIndex4 == 15)
-        frameIndex4 = 17;
-}
-
-let P1RightMove = P2RightMove = true;
-let P1LeftMove = P2LeftMove = false;
+let P1RightMove = P2RightMove = true; // Por default, os players estão virados para o lado direito,
+let P1LeftMove = P2LeftMove = false; // mas estas variáveis servem para detetar e efetuar determinado drawImage.
 
 // Funções
 function render() {
     // Apaga a cada renderização de modo a atualizar os frames
     ctx.clearRect(0, 0, W, H);
+    // Background
+    ctx.beginPath();
+    ctx.drawImage(B3, bIMGS * 480, 0, 480, 300, 0, 0, 480, 300);
+    ctx.closePath();
+    // Barra com os detalhes do jogadores (por fazer)
+    ctx.beginPath();
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 300, 480, 60);
+    ctx.fill();
+    ctx.closePath();
     // Desenho
     // Player 2 (primeiro se desenha esta personagem, para que o Player 1 esteja numa camada a frente)
     ctx.beginPath();
-    if (P2RightMove) {
-        ctx.drawImage(P2Right, 23 + (frameIndex2 + 1) + frameIndex2 * 124, 32, 37, 47, x2 - HC, H - 100, 37, 47);
-    } else if (P2LeftMove) {
-        ctx.drawImage(P2Left, 64 + (frameIndex4 + 1) + frameIndex4 * 124, 32, 37, 47, x2 - HC, H - 100, 37, 47);
+    if (P2RightMove) { // Se o movimento for para a direita
+        ctx.drawImage(P2Right, 23 + (pRMSB + 1) + pRMSB * 124, 32, 37, 47, x2 - HW / 2, H - HH - 60, 37, 47);
+    } else if (P2LeftMove) { // Se o movimento for para a esquerda
+        ctx.drawImage(P2Left, 64 + (pLMSB + 1) + pLMSB * 124, 32, 37, 47, x2 - HW / 2, H - HH - 60, 37, 47);
     }
-    ctx.fillStyle = "rbga(0, 0, 0, 0.5)";
+    ctx.fillStyle = "red";
     ctx.textAlign = 'center';
-    ctx.fillText("P2", x2, H - 110 - frameIndex2);
+    ctx.fillText("P2", x2, H - 110 - pRMSB);
     ctx.fill();
     ctx.closePath();
-    if (letterDKey && x2 < W - HW + HC)
+    if (letterDKey && x2 < W - HW + HW / 2)
         x2++;
-    if (letterAKey && x2 > 0 + HC)
+    if (letterAKey && x2 > 0 + HW / 2)
         x2--;
     //Player 1
     ctx.beginPath();
     if (P1RightMove) {
-        ctx.drawImage(P1Right, 23 + (frameIndex1 + 1) + frameIndex1 * 124, 32, 37, 47, x1 - HC, H - 100, 37, 47);
+        ctx.drawImage(P1Right, 23 + (pRMSB + 1) + pRMSB * 124, 32, 37, 47, x1 - HW / 2, H - HH - 60, 37, 47);
     } else if (P1LeftMove) {
-        ctx.drawImage(P1Left, 64 + (frameIndex3 + 1) + frameIndex3 * 124, 32, 37, 47, x1 - HC, H - 100, 37, 47);
+        ctx.drawImage(P1Left, 64 + (pLMSB + 1) + pLMSB * 124, 32, 37, 47, x1 - HW / 2, H - HH - 60, 37, 47);
     }
-    ctx.fillStyle = "rbga(0, 0, 0, 0.5)";
+    ctx.fillStyle = "blue";
     ctx.textAlign = 'center';
-    ctx.fillText("P1", x1, H - 110 - frameIndex1);
+    ctx.fillText("P1", x1, H - 110 - pRMSB);
     ctx.fill();
     ctx.closePath();
-    if (rightKey && x1 < W - HW + HC)
+    if (rightKey && x1 < W - HW + HW / 2)
         x1++;
-    if (leftKey && x1 > 0 + HC)
+    if (leftKey && x1 > 0 + HW / 2)
         x1--;
-
     window.requestAnimationFrame(render);
 }
 render();
@@ -125,20 +135,24 @@ render();
 function ArrowPressed(e) {
     if (e.key == 'ArrowRight') {
         rightKey = true;
+        leftKey = false;
         P1RightMove = true;
         P1LeftMove = false;
     } else if (e.key == 'ArrowLeft') {
         leftKey = true;
-        P1RightMove = false;
+        rightKey = false;
         P1LeftMove = true;
+        P1RightMove = false;
     } else if (e.key == 'd') {
         letterDKey = true;
+        letterAKey = false;
         P2RightMove = true;
         P2LeftMove = false;
     } else if (e.key == 'a') {
         letterAKey = true;
-        P2RightMove = false;
+        letterDKey = false;
         P2LeftMove = true;
+        P2RightMove = false;
     }
 }
 
