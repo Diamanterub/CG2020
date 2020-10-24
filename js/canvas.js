@@ -41,9 +41,9 @@ let x1 = W / 2; // Posição do Player 1 relativa a largura do ambiente (inicial
 let x2 = W / 2; // Posição do Player 2 relativa a largura do ambiente (inicialmente no centro por default)
 
 window.addEventListener("load", myInit, true); // Quando o ecrã é carregado, 
-function myInit() { sIPRMSB(), sIPLMSB(), sIBIMGS() }; // são acionadas as funções para o movimento e respiração das personagens.
+function myInit() { sIPRMSB(), sIPLMSB(), sIBIMGS()}; // são acionadas as funções para o movimento e respiração das personagens.
 
-// Tanto para o lado direito e esquerdo, são usados dois frames do sprite a cada segundo.
+// Tanto para o lado direito e esquerdo, são usados dois frames do sprite a cada segundo (Movimento e respiração)
 function sIPRMSB() {
     setInterval(PRMSB, 1000 / 2);
 };
@@ -52,12 +52,23 @@ function sIPLMSB() {
     setInterval(PLMSB, 1000 / 2);
 };
 
+// 13 frames (2 to 14)
+function sIPHWRS() { // - CHAMADO APENAS UMA VEZ
+    setInterval(PHWRS, 1000/26);
+} // 13 frames (16 to 4) 
+function sIPHLRS() { // - CHAMADO APENAS UMA VEZ
+    setInterval(PHWLS, 1000/26);
+}
+
+// Timer para o background do nível
 function sIBIMGS() {
     setInterval(BIMGS, 1000 / 13);
 };
 
 let pRMSB = 0; // Player Right Movement Sprite and Breath
 let pLMSB = 17; // Player Left Movement Sprite and Breath
+let pHWRS = 2; // Player Harpoon While Right Sprite
+let pHWLS = 16; // Player Harpoon While Left Sprite
 let bIMGS = 0; // Background Image Sprite
 
 function BIMGS() {
@@ -78,8 +89,20 @@ function PLMSB() { // No ficheiro de sprites de movimento e respiração (para a
         pLMSB = 17;
 }
 
+function PHWRS() { // No ficheiro de sprites de movimento e respiração (para a direita)
+    pHWRS++; // são usados apenas o primeiro e o segundo.
+    if (pHWRS == 14)
+        pHWRS = 2;
+}
+
+function PHWLS() { // No ficheiro de sprites de movimento e respiração (para a direita)
+    pHWLS--; // são usados apenas o primeiro e o segundo.
+    if (pHWLS == 4)
+        pHWLS = 16;
+}
+
 let P1RightMove = P2RightMove = true; // Por default, os players estão virados para o lado direito,
-let P1LeftMove = P2LeftMove = false; // mas estas variáveis servem para detetar e efetuar determinado drawImage.
+let P1LeftMove = P2LeftMove = P1Harpoon = P2Harpoon = false; // mas estas variáveis servem para detetar e efetuar determinado drawImage.
 
 // Funções
 function render() {
@@ -98,10 +121,14 @@ function render() {
     // Desenho
     // Player 2 (primeiro se desenha esta personagem, para que o Player 1 esteja numa camada a frente)
     ctx.beginPath();
-    if (P2RightMove) { // Se o movimento for para a direita
+    if (P2RightMove && !P2Harpoon) { // Se o movimento for para a direita
         ctx.drawImage(P2Right, 23 + (pRMSB + 1) + pRMSB * 124, 32, 37, 47, x2 - HW / 2, H - HH - 60, 37, 47);
-    } else if (P2LeftMove) { // Se o movimento for para a esquerda
+    } else if (P2LeftMove && !P2Harpoon) { // Se o movimento for para a esquerda
         ctx.drawImage(P2Left, 64 + (pLMSB + 1) + pLMSB * 124, 32, 37, 47, x2 - HW / 2, H - HH - 60, 37, 47);
+    } else if (P2RightMove && P2Harpoon){
+        ctx.drawImage(P2Right, 23 + (pHWRS + 1) + pHWRS * 124, 32, 37, 47, x2 - HW / 2, H - HH - 60, 37, 47);
+    } else if (P2LeftMove && P2Harpoon){
+        ctx.drawImage(P2Left, 64 + (pHWLS + 1) + pHWLS * 124, 32, 37, 47, x2 - HW / 2, H - HH - 60, 37, 47);
     }
     ctx.fillStyle = "red";
     ctx.textAlign = 'center';
@@ -114,10 +141,14 @@ function render() {
         x2--;
     //Player 1
     ctx.beginPath();
-    if (P1RightMove) {
+    if (P1RightMove && !P1Harpoon) {
         ctx.drawImage(P1Right, 23 + (pRMSB + 1) + pRMSB * 124, 32, 37, 47, x1 - HW / 2, H - HH - 60, 37, 47);
-    } else if (P1LeftMove) {
+    } else if (P1LeftMove && !P1Harpoon) {
         ctx.drawImage(P1Left, 64 + (pLMSB + 1) + pLMSB * 124, 32, 37, 47, x1 - HW / 2, H - HH - 60, 37, 47);
+    } else if (P1RightMove && P1Harpoon){
+        ctx.drawImage(P1Right, 23 + (pHWRS + 1) + pHWRS * 124, 32, 37, 47, x1 - HW / 2, H - HH - 60, 37, 47);
+    } else if (P1LeftMove && P1Harpoon){
+        ctx.drawImage(P1Left, 64 + (pHWLS + 1) + pHWLS * 124, 32, 37, 47, x1 - HW / 2, H - HH - 60, 37, 47);
     }
     ctx.fillStyle = "blue";
     ctx.textAlign = 'center';
@@ -138,11 +169,15 @@ function ArrowPressed(e) {
         leftKey = false;
         P1RightMove = true;
         P1LeftMove = false;
+        P1Harpoon = false;
     } else if (e.key == 'ArrowLeft') {
         leftKey = true;
         rightKey = false;
         P1LeftMove = true;
         P1RightMove = false;
+        P1Harpoon = false;
+    } else if (e.key == 'ArrowUp'){
+        P1Harpoon = true;
     } else if (e.key == 'd') {
         letterDKey = true;
         letterAKey = false;
@@ -153,6 +188,8 @@ function ArrowPressed(e) {
         letterDKey = false;
         P2LeftMove = true;
         P2RightMove = false;
+    } else if (e.key == 'w') {
+        P2Harpoon = true;
     }
 }
 
