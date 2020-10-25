@@ -49,8 +49,10 @@ export default class Player1 {
         // Quando o ecrã é carregado, são acionadas as funções para o movimento e respiração das personagens.
         //Tanto para o lado direito e esquerdo, são usados dois frames do sprite a cada segundo (Movimento e respiração)
 
-        this.sIPHWRS();
-        this.sIPHLRS();
+        // 13 frames (2 to 14)
+        setInterval(this.PHWRS(), 1000/26); // - CHAMADO APENAS UMA VEZ
+        // 13 frames (16 to 4)
+        setInterval(this.PHWLS(), 1000/26); // - CHAMADO APENAS UMA VEZ
 
         this.GetSprite = function(sprite) {
             switch (sprite) {
@@ -62,24 +64,20 @@ export default class Player1 {
         }
     }
 
-    myInit() { this.sIPRMSB(), this.sIPLMSB()}
-    sIPRMSB() { setInterval(this.PRMSB, 1000 / 2)}
-    sIPLMSB() { setInterval(this.PLMSB, 1000 / 2) }
-    // 13 frames (2 to 14)
-    sIPHWRS() { // - CHAMADO APENAS UMA VEZ
-        setInterval(this.PHWRS(), 1000/26);
-    } // 13 frames (16 to 4) 
-    sIPHLRS() { // - CHAMADO APENAS UMA VEZ
-        setInterval(this.PHWLS(), 1000/26);
-    }
+    myInit() { setInterval(this.PRMSB, 1000 / 2), setInterval(this.PLMSB, 1000 / 2)}
 
     Desenho() {
         this.ctx.beginPath();
-        let Dir = this.RightMove ? 
-        this.Harpoon ? this.GetSprite("pHWRS") : this.GetSprite("pRMSB")
-        : this.Harpoon ? this.GetSprite("pHWLS") : this.GetSprite("pLMSB")
-        let N = this.RightMove ? 23 : 64;
-        let Sprite = this.RightMove ? this.Right : this.Left;
+        let Dir, N, Sprite;
+        if (this.RightMove) {
+            Dir = this.Harpoon ? this.GetSprite("pHWRS") : this.GetSprite("pRMSB");
+            N = 23;
+            Sprite = this.Right;
+        } else {
+            Dir = this.Harpoon ? this.GetSprite("pHWLS") : this.GetSprite("pLMSB");
+            N = 64;
+            Sprite = this.Left;
+        }
         this.ctx.drawImage(Sprite, N + (Dir + 1) + Dir * 124, 32, 37, 47, this.X - this.HW / 2, this.H - this.HH - 60, 37, 47);
         
         this.ctx.fillStyle = "blue";
@@ -87,35 +85,40 @@ export default class Player1 {
         this.ctx.fillText("P1", this.X, this.H - 110 - this.GetSprite("pRMSB"));
         this.ctx.fill();
         this.ctx.closePath();
-        if (this.rightKey && this.X < this.W - this.HW + this.HW / 2)
-            this.X++;
-        if (this.leftKey && this.X > 0 + this.HW / 2)
-            this.X--;
+        if (this.rightKey && this.X < this.W - this.HW + this.HW / 2) this.X++;
+        if (this.leftKey && this.X > 0 + this.HW / 2) this.X--;
     }
 
     ArrowPressed(e) {
-        if (e.key == 'ArrowRight') {
-            this.rightKey = true;
-            this.leftKey = false;
-            this.RightMove = true;
-            this.LeftMove = false;
-            this.Harpoon = false;
-        } else if (e.key == 'ArrowLeft') {
-            this.leftKey = true;
-            this.rightKey = false;
-            this.LeftMove = true;
-            this.RightMove = false;
-            this.Harpoon = false;
-        } else if (e.key == 'ArrowUp') {
-            this.Harpoon = true;
+        switch (e.key) {
+            case 'ArrowRight':
+                this.rightKey = true;
+                this.leftKey = false;
+                this.RightMove = true;
+                this.LeftMove = false;
+                this.Harpoon = false;
+            break;            
+            case 'ArrowLeft':
+                this.leftKey = true;
+                this.rightKey = false;
+                this.LeftMove = true;
+                this.RightMove = false;
+                this.Harpoon = false;
+            break;
+            case 'ArrowUp':
+                this.Harpoon = true;
+            break;
         }
     }
     
     ArrowReleased(e) {
-        if (e.key == 'ArrowRight') {
-            this.rightKey = false;
-        } else if (e.key == 'ArrowLeft') {
-            this.leftKey = false;
+        switch (e.key) {
+            case 'ArrowRight':
+                this.rightKey = false;
+            break;            
+            case 'ArrowLeft':
+                this.leftKey = false;
+            break;
         }
     }
 }
