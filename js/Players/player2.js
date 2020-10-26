@@ -82,6 +82,7 @@ export default class Player2 {
         
         this.ctx.fillStyle = "red";
         this.ctx.textAlign = 'center';
+        this.ctx.font = "10px Amiga Forever Pro2"
         this.ctx.fillText("P2", this.X, this.H - 110 - this.GetSprite("pRMSB"));
         this.ctx.fill();
         this.ctx.closePath();
