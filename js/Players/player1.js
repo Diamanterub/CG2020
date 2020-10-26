@@ -17,16 +17,19 @@ export default class Player1 {
         this.Left = new Image();
         this.Left.src = '../../imgs/p1left.png'; // Sprite para o Player 1 quando se move para a esquerda
 
-        this.rightKey = false; this.leftKey = false;
+        this.rightKey = false; this.leftKey = false; this.upKey = false;
         this.X = this.W / 2 - this.W / 10; // Posição do Player 1 relativa a largura do ambiente
 
         let pRMSB = 0; // Player Right Movement Sprite and Breath
         let pLMSB = 17; // Player Left Movement Sprite and Breath
-        let pHWRS = 2; // Player Harpoon While Right Sprite
+        let pHWRS = 1; // Player Harpoon While Right Sprite
         let pHWLS = 16; // Player Harpoon While Left Sprite
+        var timer = null;
+        this.value = 0;
 
         this.RightMove = true; // Por default, os players estão virados para o lado direito,
-        this.LeftMove = false; this.Harpoon = false; // mas estas variáveis servem para detetar e efetuar determinado drawImage.
+        this.LeftMove = false; 
+        this.Harpoon = false; // mas estas variáveis servem para detetar e efetuar determinado drawImage.
 
         this.PRMSB = function() { // No ficheiro de sprites de movimento e respiração (para a direita)
             pRMSB++; // são usados apenas o primeiro e o segundo.
@@ -38,7 +41,7 @@ export default class Player1 {
         }    
         this.PHWRS = function() { // No ficheiro de sprites de movimento e respiração (para a direita)
             pHWRS++; // são usados apenas o primeiro e o segundo.
-            if (pHWRS == 14) pHWRS = 2;
+            if (pHWRS == 14) pHWRS = 1;
         }    
         this.PHWLS = function() { // No ficheiro de sprites de movimento e respiração (para a direita)
             pHWLS--; // são usados apenas o primeiro e o segundo.
@@ -50,9 +53,9 @@ export default class Player1 {
         //Tanto para o lado direito e esquerdo, são usados dois frames do sprite a cada segundo (Movimento e respiração)
 
         // 13 frames (2 to 14)
-        setInterval(this.PHWRS(), 1000/26); // - CHAMADO APENAS UMA VEZ
+        //setInterval(this.PHWRS, 1000/26); // - CHAMADO APENAS UMA VEZ
         // 13 frames (16 to 4)
-        setInterval(this.PHWLS(), 1000/26); // - CHAMADO APENAS UMA VEZ
+        setInterval(this.PHWLS, 1000/26); // - CHAMADO APENAS UMA VEZ
 
         this.GetSprite = function(sprite) {
             switch (sprite) {
@@ -62,6 +65,17 @@ export default class Player1 {
                 case "pHWLS": return pHWLS;
             }
         }
+        //
+        this.startHarpoonAnimation = function() {
+            // Then you initilize the variable
+            timer = setInterval(this.PHWRS, 1000/28);
+            //this.Harpoon = false;
+          }
+        //  
+        this.stopHarpoonAnimation = function() {
+            // To cancel an interval, pass the timer to clearInterval()
+            clearInterval(timer);
+          } 
     }
 
     myInit() { setInterval(this.PRMSB, 1000 / 2), setInterval(this.PLMSB, 1000 / 2)}
@@ -96,17 +110,17 @@ export default class Player1 {
                 this.leftKey = false;
                 this.RightMove = true;
                 this.LeftMove = false;
-                this.Harpoon = false;
             break;            
             case 'ArrowLeft':
                 this.leftKey = true;
                 this.rightKey = false;
                 this.LeftMove = true;
                 this.RightMove = false;
-                this.Harpoon = false;
             break;
             case 'ArrowUp':
                 this.Harpoon = true;
+                this.startHarpoonAnimation();
+                setTimeout(this.stopHarpoonAnimation, 460);
             break;
         }
     }
