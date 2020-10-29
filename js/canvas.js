@@ -64,7 +64,7 @@ export default class GameCanvas {
             ctx.fillText(`${level}`, 240, 320);
             ctx.fillText(`Points: ${points}`, 240, 350);
             ctx.font = "15px Amiga Forever Pro2"
-            ctx.fillText(`Time: ${time}`,420,30)
+            ctx.fillText(`Time: ${time}`,410,30)
             ctx.closePath();
             player2.Desenho();
             player1.Desenho();

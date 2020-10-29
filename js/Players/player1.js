@@ -81,29 +81,30 @@ export default class Player1 {
         this.ctx.beginPath();
         let Dir; // Definir qual função usar relativa ao lado em que se está virado e há uso do arpão
         let n = 11; // Esta variável serve para centrar a personagem em função a abscissa do sprite
+        let bs = 10; // Tamanho da borda
         if (this.RightMove && !this.Harpoon) {
             Dir = this.GetSprite("pRMSB");
-            this.ctx.drawImage(this.Right, 23-n + (Dir + 1) + Dir * 124, 31, 48, 48, this.X - this.HW / 2, this.H - this.HH - 60, 48, 48);
+            this.ctx.drawImage(this.Right, 23-n + (Dir + 1) + Dir * 124, 31, 48, 48, this.X - this.HW / 2, this.H - this.HH - 70, 48, 48);
         } else if (this.RightMove && this.Harpoon){
             Dir = this.GetSprite("pHWRS");
-            this.ctx.drawImage(this.Right, 23-n + (Dir + 1) + Dir * 124, 31, 48, 48, this.X - this.HW / 2, this.H - this.HH - 60, 48, 48);
+            this.ctx.drawImage(this.Right, 23-n + (Dir + 1) + Dir * 124, 31, 48, 48, this.X - this.HW / 2, this.H - this.HH - 70, 48, 48);
         } else if (this.LeftMove && !this.Harpoon){
             Dir = this.GetSprite("pLMSB");
-            this.ctx.drawImage(this.Left, 64-n + (Dir + 1) + Dir * 124, 31, 48+n, 48, this.X - this.HW / 2, this.H - this.HH - 60, 48+n, 48);
+            this.ctx.drawImage(this.Left, 64-n + (Dir + 1) + Dir * 124, 31, 48+n, 48, this.X - this.HW / 2, this.H - this.HH - 70, 48+n, 48);
         } else if (this.LeftMove && this.Harpoon){
             Dir = this.GetSprite("pHWLS");
-            this.ctx.drawImage(this.Left, 64-n + (Dir + 1) + Dir * 124, 31, 48+n, 48, this.X - this.HW / 2, this.H - this.HH - 60, 48+n, 48);
+            this.ctx.drawImage(this.Left, 64-n + (Dir + 1) + Dir * 124, 31, 48+n, 48, this.X - this.HW / 2, this.H - this.HH - 70, 48+n, 48);
         }
         // Texto que indica o "nome" do jogador
         this.ctx.fillStyle = "#7080df";
         this.ctx.textAlign = 'center';
         this.ctx.font = "10px Amiga Forever Pro2"
-        this.ctx.fillText("P1", this.X+11, this.H - 110);
+        this.ctx.fillText("P1", this.X+11, this.H - 120);
         this.ctx.fill();
         this.ctx.closePath();
         // Limitação vertical relativa a área do canvas
-        if (this.rightKey && this.X < this.W - this.HW + this.HW / 2 - n) this.X++;
-        if (this.leftKey && this.X > 0 + this.HW / 2 - n) this.X--;
+        if (this.rightKey && this.X < this.W - this.HW + this.HW / 2 - n - bs) this.X++;
+        if (this.leftKey && this.X > 0 + this.HW / 2 - n + bs) this.X--;
     }
 
     async ArrowPressed(e) {
