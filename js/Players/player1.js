@@ -26,11 +26,11 @@ export default class Player1 {
         let pHWLS = 16; // Player Harpoon While Left Sprite
         var timerRight = null;
         var timerLeft = null;
-        let value = false;
+        this.antiSpam = false;
 
         this.RightMove = true; // Por default, os players estão virados para o lado direito,
         this.LeftMove = false; 
-        let Harpoon = false; // mas estas variáveis servem para detetar e efetuar determinado drawImage.
+        this.Harpoon = false; // mas estas variáveis servem para detetar e efetuar determinado drawImage.
 
         this.PRMSB = function() { // No ficheiro de sprites de movimento e respiração (para a direita)
             pRMSB++; // são usados apenas o primeiro e o segundo.
@@ -61,7 +61,7 @@ export default class Player1 {
                 case "pHWLS": return pHWLS;
             }
         }
-        /*this.test = function(test){
+        this.test = function(test){
             switch(test) {
                 case "1": return 24;
                 case "2": return 10;
@@ -78,53 +78,36 @@ export default class Player1 {
                 case "move": return 48;
                 case "harpoon": return 48;
             }
-        }*/
-        //
+        }
+        
         this.startHarpoonAnimation = function() {
-            // Then you initilize the variable
             timerRight = setInterval(this.PHWRS, 1000/28);
             timerLeft = setInterval(this.PHWLS, 1000/28);
-          }
-        //  
+        }
         this.stopHarpoonAnimation = function() {
-            // To cancel an interval, pass the timer to clearInterval()
             clearInterval(timerRight);
             clearInterval(timerLeft);
-          }  
-        this.preventSpam = function(){
-            return value;
-          }
-        this.turnTrue = function(){
-            value = true;
         }
-        this.turnFalse = function(){
-            value = false;
-            Harpoon = false;
-        }
-        this.GetHarpoon = function() {
-            return Harpoon;
-          }
     }
 
     myInit() { setInterval(this.PRMSB, 1000 / 2), setInterval(this.PLMSB, 1000 / 2)}
 
     Desenho() {
         this.ctx.beginPath();
-        let Dir, hStatus;
-        //hStatus = this.GetHarpoon?  
-        if (this.RightMove && !Harpoon) {
+        let Dir, N, sizeX, sizeY, Sprite;
+        if (this.RightMove && !this.Harpoon) {
             Dir = this.GetSprite("pRMSB");
-            /*N = this.Harpoon? this.test("2") : this.test("1");
+            N = this.Harpoon? this.test("2") : this.test("1");
             sizeX = this.Harpoon ? this.hBSX("harpoon") : this.hBSX("move");
             sizeY = this.Harpoon ? this.hBSY("harpoon") : this.hBSY("move");
-            Sprite = this.Right;*/
+            Sprite = this.Right;
             this.ctx.drawImage(this.Right, 24 + (Dir + 1) + Dir * 124, 31, 37, 48, this.X - this.HW / 2, this.H - this.HH - 60, 37, 48);
         } else if (this.RightMove && this.Harpoon){
             Dir = this.GetSprite("pHWRS");
-            /*N = 64;
+            N = 64;
             sizeX = this.Harpoon ? this.hBSX("harpoon") : this.hBSX("move");
             sizeY = this.Harpoon ? this.hBSY("harpoon") : this.hBSY("move");
-            Sprite = this.Left;*/
+            Sprite = this.Left;
             this.ctx.drawImage(this.Right, 24 + (Dir + 1) + Dir * 124, 31, 37, 48, this.X - this.HW / 2, this.H - this.HH - 60, 37, 48);
         } else if (this.LeftMove && !this.Harpoon){
             Dir = this.GetSprite("pLMSB");
@@ -143,7 +126,7 @@ export default class Player1 {
         if (this.leftKey && this.X > 0 + this.HW / 2) this.X--;
     }
 
-    ArrowPressed(e) {
+    async ArrowPressed(e) {
         switch (e.key) {
             case 'ArrowRight':
                 this.rightKey = true;
@@ -158,14 +141,16 @@ export default class Player1 {
                 this.RightMove = false;
             break;
             case 'ArrowUp':
-                console.log(this.preventSpam());
-                if (!this.preventSpam()){
-                this.turnTrue();
+                if (!this.antiSpam){
+                this.antiSpam = true;
                 this.Harpoon = true;
                 this.startHarpoonAnimation();
-                setTimeout(this.stopHarpoonAnimation, 460); //460
-                setTimeout(this.turnFalse, 461); // 461
-                }
+                await this.sleep(460);
+                this.stopHarpoonAnimation();
+                await this.sleep(461)
+                this.antiSpam = false;
+                this.Harpoon = false;
+                    }
             break;
         }
     }
@@ -174,10 +159,13 @@ export default class Player1 {
         switch (e.key) {
             case 'ArrowRight':
                 this.rightKey = false;
-            break;            
+            break;
             case 'ArrowLeft':
                 this.leftKey = false;
             break;
         }
     }
+
+    //função de espera
+    sleep(ms) { return new Promise( resolve => setTimeout(resolve, ms) ); }
 }
