@@ -12,7 +12,7 @@ export default class GameCanvas {
         const HH = 47; // Altura da Hitbox e das personagens
         const HW = 37; // Largura da hitbox e das personages
 
-        let background = new Background(ctx, "B3");
+        let background = new Background(ctx, "B1");
         let player1 = new Player1(ctx, W, H, HH, HW);
         let player2 = new Player2(ctx, W, H, HH, HW);
         let points = 0;
@@ -55,10 +55,10 @@ export default class GameCanvas {
             ctx.fillStyle = "white";
             ctx.font = "12px Amiga Forever Pro2"
             //Player1
-            ctx.fillText(`Player-1`,50, 320);
+            ctx.fillText(`Player 1`,50, 320);
             //Faltam fazer as vidas
             //Player2
-            ctx.fillText(`Player-2`,430, 320);
+            ctx.fillText(`Player 2`,430, 320);
             //Faltam fazer as vidas
             //General data
             ctx.fillText(`${level}`, 240, 320);

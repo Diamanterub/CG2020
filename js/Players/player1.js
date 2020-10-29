@@ -17,19 +17,20 @@ export default class Player1 {
         this.Left = new Image();
         this.Left.src = '../../imgs/p1left.png'; // Sprite para o Player 1 quando se move para a esquerda
 
-        this.rightKey = false; this.leftKey = false; this.upKey = false;
+        this.rightKey = false; this.leftKey = false;
         this.X = this.W / 2 - this.W / 10; // Posição do Player 1 relativa a largura do ambiente
 
         let pRMSB = 0; // Player Right Movement Sprite and Breath
         let pLMSB = 17; // Player Left Movement Sprite and Breath
         let pHWRS = 1; // Player Harpoon While Right Sprite
         let pHWLS = 16; // Player Harpoon While Left Sprite
-        var timer = null;
-        this.value = 0;
+        var timerRight = null;
+        var timerLeft = null;
+        let value = false;
 
         this.RightMove = true; // Por default, os players estão virados para o lado direito,
         this.LeftMove = false; 
-        this.Harpoon = false; // mas estas variáveis servem para detetar e efetuar determinado drawImage.
+        let Harpoon = false; // mas estas variáveis servem para detetar e efetuar determinado drawImage.
 
         this.PRMSB = function() { // No ficheiro de sprites de movimento e respiração (para a direita)
             pRMSB++; // são usados apenas o primeiro e o segundo.
@@ -45,17 +46,12 @@ export default class Player1 {
         }    
         this.PHWLS = function() { // No ficheiro de sprites de movimento e respiração (para a direita)
             pHWLS--; // são usados apenas o primeiro e o segundo.
-            if (pHWLS == 4) pHWLS = 16;
+            if (pHWLS == 4) pHWLS = 17;
         }
 
         window.addEventListener("load", this.myInit(), true); 
         // Quando o ecrã é carregado, são acionadas as funções para o movimento e respiração das personagens.
         //Tanto para o lado direito e esquerdo, são usados dois frames do sprite a cada segundo (Movimento e respiração)
-
-        // 13 frames (2 to 14)
-        //setInterval(this.PHWRS, 1000/26); // - CHAMADO APENAS UMA VEZ
-        // 13 frames (16 to 4)
-        setInterval(this.PHWLS, 1000/26); // - CHAMADO APENAS UMA VEZ
 
         this.GetSprite = function(sprite) {
             switch (sprite) {
@@ -65,35 +61,78 @@ export default class Player1 {
                 case "pHWLS": return pHWLS;
             }
         }
+        /*this.test = function(test){
+            switch(test) {
+                case "1": return 24;
+                case "2": return 10;
+            }
+        }
+        this.hBSX = function(hbsx){
+            switch(hbsx){
+                case "move": return 37;
+                case "harpoon": return 48;
+            }
+        }
+        this.hBSY = function(hbsy){
+            switch(hbsy){
+                case "move": return 48;
+                case "harpoon": return 48;
+            }
+        }*/
         //
         this.startHarpoonAnimation = function() {
             // Then you initilize the variable
-            timer = setInterval(this.PHWRS, 1000/28);
-            //this.Harpoon = false;
+            timerRight = setInterval(this.PHWRS, 1000/28);
+            timerLeft = setInterval(this.PHWLS, 1000/28);
           }
         //  
         this.stopHarpoonAnimation = function() {
             // To cancel an interval, pass the timer to clearInterval()
-            clearInterval(timer);
-          } 
+            clearInterval(timerRight);
+            clearInterval(timerLeft);
+          }  
+        this.preventSpam = function(){
+            return value;
+          }
+        this.turnTrue = function(){
+            value = true;
+        }
+        this.turnFalse = function(){
+            value = false;
+            Harpoon = false;
+        }
+        this.GetHarpoon = function() {
+            return Harpoon;
+          }
     }
 
     myInit() { setInterval(this.PRMSB, 1000 / 2), setInterval(this.PLMSB, 1000 / 2)}
 
     Desenho() {
         this.ctx.beginPath();
-        let Dir, N, Sprite;
-        if (this.RightMove) {
-            Dir = this.Harpoon ? this.GetSprite("pHWRS") : this.GetSprite("pRMSB");
-            N = 23;
-            Sprite = this.Right;
-        } else {
-            Dir = this.Harpoon ? this.GetSprite("pHWLS") : this.GetSprite("pLMSB");
-            N = 64;
-            Sprite = this.Left;
+        let Dir, hStatus;
+        //hStatus = this.GetHarpoon?  
+        if (this.RightMove && !Harpoon) {
+            Dir = this.GetSprite("pRMSB");
+            /*N = this.Harpoon? this.test("2") : this.test("1");
+            sizeX = this.Harpoon ? this.hBSX("harpoon") : this.hBSX("move");
+            sizeY = this.Harpoon ? this.hBSY("harpoon") : this.hBSY("move");
+            Sprite = this.Right;*/
+            this.ctx.drawImage(this.Right, 24 + (Dir + 1) + Dir * 124, 31, 37, 48, this.X - this.HW / 2, this.H - this.HH - 60, 37, 48);
+        } else if (this.RightMove && this.Harpoon){
+            Dir = this.GetSprite("pHWRS");
+            /*N = 64;
+            sizeX = this.Harpoon ? this.hBSX("harpoon") : this.hBSX("move");
+            sizeY = this.Harpoon ? this.hBSY("harpoon") : this.hBSY("move");
+            Sprite = this.Left;*/
+            this.ctx.drawImage(this.Right, 24 + (Dir + 1) + Dir * 124, 31, 37, 48, this.X - this.HW / 2, this.H - this.HH - 60, 37, 48);
+        } else if (this.LeftMove && !this.Harpoon){
+            Dir = this.GetSprite("pLMSB");
+            this.ctx.drawImage(this.Left, 70 + (Dir + 1) + Dir * 124, 31, 48, 48, this.X - this.HW / 2, this.H - this.HH - 60, 48, 48);
+        } else if (this.LeftMove && this.Harpoon){
+            Dir = this.GetSprite("pHWLS");
+            this.ctx.drawImage(this.Left, 64 + (Dir + 1) + Dir * 124, 31, 48, 48, this.X - this.HW / 2, this.H - this.HH - 60, 48, 48);
         }
-        this.ctx.drawImage(Sprite, N + (Dir + 1) + Dir * 124, 32, 37, 47, this.X - this.HW / 2, this.H - this.HH - 60, 37, 47);
-        
         this.ctx.fillStyle = "blue";
         this.ctx.textAlign = 'center';
         this.ctx.font = "10px Amiga Forever Pro2"
@@ -119,9 +158,14 @@ export default class Player1 {
                 this.RightMove = false;
             break;
             case 'ArrowUp':
+                console.log(this.preventSpam());
+                if (!this.preventSpam()){
+                this.turnTrue();
                 this.Harpoon = true;
                 this.startHarpoonAnimation();
-                setTimeout(this.stopHarpoonAnimation, 460);
+                setTimeout(this.stopHarpoonAnimation, 460); //460
+                setTimeout(this.turnFalse, 461); // 461
+                }
             break;
         }
     }
