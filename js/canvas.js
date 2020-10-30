@@ -1,5 +1,4 @@
-import Player1 from './Players/player1.js';
-import Player2 from './Players/player2.js';
+import Players from './players.js';
 import Background from './background.js';
 
 export default class GameCanvas {
@@ -13,15 +12,17 @@ export default class GameCanvas {
         const HW = 37; // Largura da hitbox e das personages
 
         let background = new Background(ctx, "B1");
-        let player1 = new Player1(ctx, W, H, HH, HW);
-        let player2 = new Player2(ctx, W, H, HH, HW);
+        let player1 = new Players(ctx, W, H, HH, HW, "P1");
+        let player2 = new Players(ctx, W, H, HH, HW, "P2");
         let points = 0;
         let level = "";
         //Test remove later
         let levelNum = 3;
         let time = 100;
-        
+        //Test provalvelmente remover depois
+
         //Ele recebe o numero do nivel do menu e identifica o nome do level
+
         switch (levelNum) {
             case 1:
                 ////Placeholder Missing/Not official name
@@ -55,21 +56,24 @@ export default class GameCanvas {
             ctx.fillStyle = "white";
             ctx.font = "12px Amiga Forever Pro2"
             //Player1
-            ctx.fillText(`Player 1`,50, 320);
+            ctx.fillText(`Player 1`, 50, 320);
             //Faltam fazer as vidas
             //Player2
-            ctx.fillText(`Player 2`,430, 320);
+            ctx.fillText(`Player 2`, 430, 320);
             //Faltam fazer as vidas
             //General data
+            //Level
             ctx.fillText(`${level}`, 240, 320);
+            //Points
             ctx.fillText(`Points: ${points}`, 240, 350);
             ctx.font = "15px Amiga Forever Pro2"
-            ctx.fillText(`Time: ${time}`,410,30)
+            //Time
+            ctx.fillText(`Time: ${time}`, 410, 30)
             ctx.closePath();
             player2.Desenho();
             player1.Desenho();
             window.requestAnimationFrame(render);
-            
+
         }
         render();
 
@@ -86,7 +90,3 @@ export default class GameCanvas {
         window.addEventListener('keyup', ArrowReleased);
     }
 }
-    
-
-
-

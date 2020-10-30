@@ -1,5 +1,5 @@
 import ResizeWindow from './resize.js';
-import GameCanvas   from './canvas.js';
+import GameCanvas from './canvas.js';
 
 class App {
     constructor() {
@@ -9,3 +9,13 @@ class App {
 }
 
 new App();
+
+
+
+
+
+
+
+
+
+
