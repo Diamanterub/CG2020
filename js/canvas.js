@@ -1,5 +1,4 @@
-import Player1 from './Players/player1.js';
-import Player2 from './Players/player2.js';
+import Players from './players.js';
 import Background from './background.js';
 
 export default class GameCanvas {
@@ -13,8 +12,8 @@ export default class GameCanvas {
         const HW = 37; // Largura da hitbox e das personages
 
         let background = new Background(ctx, "B1");
-        let player1 = new Player1(ctx, W, H, HH, HW);
-        let player2 = new Player2(ctx, W, H, HH, HW);
+        let player1 = new Players(ctx, W, H, HH, HW, "P1");
+        let player2 = new Players(ctx, W, H, HH, HW, "P2");
         let points = 0;
         let level = "";
         //Test remove later
