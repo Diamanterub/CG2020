@@ -22,38 +22,39 @@ export default class Player2 {
 
         let pRMSB = 0; // Player Right Movement Sprite and Breath
         let pLMSB = 17; // Player Left Movement Sprite and Breath
-        let pHWRS = 2; // Player Harpoon While Right Sprite
+        let pHWRS = 1; // Player Harpoon While Right Sprite
         let pHWLS = 16; // Player Harpoon While Left Sprite
+        var timerRight = null; // Temporazidor enquanto virada para direita
+        var timerLeft = null; // Temporazidor enquanto virada para esquerda
+        this.antiSpam = false; // Anti Spam de clicar na animação do arpão
 
-        this.RightMove = true; // Por default, os players estão virados para o lado direito,
-        this.LeftMove = false; this.Harpoon = false; // mas estas variáveis servem para detetar e efetuar determinado drawImage.
+        this.RightMove = false; // Por default, o Player 1 está virado para o lado esquerdo
+        this.LeftMove = true; // e estas variáveis servem para distinguir a que lado o jogador está virado.
+        this.Harpoon = false; // Esta é outra variável para o caso do arpão ser acionado.
 
-        this.PRMSB = function() { // No ficheiro de sprites de movimento e respiração (para a direita)
-            pRMSB++; // são usados apenas o primeiro e o segundo.
+        this.PRMSB = function() { // No ficheiro de sprites do lado esquerdo
+            pRMSB++; // são usados apenas o primeiro e o segundo (para respiração e movimento).
             if (pRMSB == 2) pRMSB = 0;
         }
-        this.PLMSB = function() { // No ficheiro de sprites de movimento e respiração (para a esquerda)
-            pLMSB--; // são usados apenas o último e o penúltimo.
+        this.PLMSB = function() { // No ficheiro de sprites do lado esquerdo
+            pLMSB--; // são usados apenas o último e o penúltimo (para respiração e movimento).
             if (pLMSB == 15) pLMSB = 17;
         }    
-        this.PHWRS = function() { // No ficheiro de sprites de movimento e respiração (para a direita)
-            pHWRS++; // são usados apenas o primeiro e o segundo.
-            if (pHWRS == 14) pHWRS = 2;
+        this.PHWRS = function() { // No ficheiro de sprites (para a direita)
+            pHWRS++; // são usados do 2º ao 15º (para a animação do arpão).
+            if (pHWRS == 14) pHWRS = 1;
         }    
         this.PHWLS = function() { // No ficheiro de sprites de movimento e respiração (para a direita)
-            pHWLS--; // são usados apenas o primeiro e o segundo.
-            if (pHWLS == 4) pHWLS = 16;
+            pHWLS--; // são usados do 17º ao 4º (para a animação do arpão).
+            if (pHWLS == 3) pHWLS = 16;
         }
 
+        /* Quando o ecrã é carregado, é acionada uma função que irá executar outras funções relativas ao 
+        movimento e respiração da personagem.*/
         window.addEventListener("load", this.myInit(), true); 
-        // Quando o ecrã é carregado, são acionadas as funções para o movimento e respiração das personagens.
-        //Tanto para o lado direito e esquerdo, são usados dois frames do sprite a cada segundo (Movimento e respiração)
 
-        // 13 frames (2 to 14)
-        setInterval(this.PHWRS(), 1000/26); // - CHAMADO APENAS UMA VEZ
-        // 13 frames (16 to 4)
-        setInterval(this.PHWLS(), 1000/26); // - CHAMADO APENAS UMA VEZ
-
+        /* Esta função aproveita funções relativas a transição dos sprites para também alterar o valor 
+        sX no drawImage. */
         this.GetSprite = function(sprite) {
             switch (sprite) {
                 case "pRMSB": return pRMSB;
@@ -62,52 +63,77 @@ export default class Player2 {
                 case "pHWLS": return pHWLS;
             }
         }
+        // Para a animação do arpão em 1 segundo são dados 28 frames, mas definimos o tempo para 0.5s, logo são dados 14 frames nesse tempo
+        this.startHarpoonAnimation = function() {
+            timerRight = setInterval(this.PHWRS, 1000/28);
+            timerLeft = setInterval(this.PHWLS, 1000/28);
+        }
+        // Após passar um timeOut de 480ms, esta função é executada para parar a animação do arpão
+        this.stopHarpoonAnimation = function() {
+            clearInterval(timerRight);
+            clearInterval(timerLeft);
+        }
+        
     }
-
+    // São acionadas as funções para o movimento e respiração da personagem.
     myInit() { setInterval(this.PRMSB, 1000 / 2), setInterval(this.PLMSB, 1000 / 2)}
 
     Desenho() {
         this.ctx.beginPath();
-        let Dir, N, Sprite;
-        if (this.RightMove) {
-            Dir = this.Harpoon ? this.GetSprite("pHWRS") : this.GetSprite("pRMSB");
-            N = 23;
-            Sprite = this.Right;
-        } else {
-            Dir = this.Harpoon ? this.GetSprite("pHWLS") : this.GetSprite("pLMSB");
-            N = 64;
-            Sprite = this.Left;
+        let Dir; // Definir qual função usar relativa ao lado em que se está virado e há uso do arpão
+        let n = 11; // Esta variável serve para centrar a personagem em função a abscissa do sprite
+        let bs = 10; // Tamanho da borda
+        if (this.RightMove && !this.Harpoon) {
+            Dir = this.GetSprite("pRMSB");
+            this.ctx.drawImage(this.Right, 23-n + (Dir + 1) + Dir * 124, 31, 48, 48, this.X - this.HW / 2, this.H - this.HH - 70, 48, 48);
+        } else if (this.RightMove && this.Harpoon){
+            Dir = this.GetSprite("pHWRS");
+            this.ctx.drawImage(this.Right, 23-n + (Dir + 1) + Dir * 124, 31, 48, 48, this.X - this.HW / 2, this.H - this.HH - 70, 48, 48);
+        } else if (this.LeftMove && !this.Harpoon){
+            Dir = this.GetSprite("pLMSB");
+            this.ctx.drawImage(this.Left, 64-n + (Dir + 1) + Dir * 124, 31, 48+n, 48, this.X - this.HW / 2, this.H - this.HH - 70, 48+n, 48);
+        } else if (this.LeftMove && this.Harpoon){
+            Dir = this.GetSprite("pHWLS");
+            this.ctx.drawImage(this.Left, 64-n + (Dir + 1) + Dir * 124, 31, 48+n, 48, this.X - this.HW / 2, this.H - this.HH - 70, 48+n, 48);
         }
-        this.ctx.drawImage(Sprite, N + (Dir + 1) + Dir * 124, 32, 37, 47, this.X - this.HW / 2, this.H - this.HH - 60, 37, 47);
-        
-        this.ctx.fillStyle = "red";
+        // Texto que indica o "nome" do jogador
+        this.ctx.fillStyle = "#a2000b";
         this.ctx.textAlign = 'center';
         this.ctx.font = "10px Amiga Forever Pro2"
-        this.ctx.fillText("P2", this.X, this.H - 110 - this.GetSprite("pRMSB"));
+        this.ctx.fillText("P1", this.X+11, this.H - 120);
         this.ctx.fill();
         this.ctx.closePath();
-        if (this.rightKey && this.X < this.W - this.HW + this.HW / 2) this.X++;
-        if (this.leftKey && this.X > 0 + this.HW / 2) this.X--;
+        // Limitação vertical relativa a área do canvas
+        if (this.rightKey && this.X < this.W - this.HW + this.HW / 2 - n - bs) this.X++;
+        if (this.leftKey && this.X > 0 + this.HW / 2 - n + bs) this.X--;
     }
 
-    ArrowPressed(e) {
+    async ArrowPressed(e) {
         switch (e.key) {
             case 'd':
                 this.rightKey = true;
                 this.leftKey = false;
                 this.RightMove = true;
                 this.LeftMove = false;
-                this.Harpoon = false;
             break;            
             case 'a':
                 this.leftKey = true;
                 this.rightKey = false;
                 this.LeftMove = true;
                 this.RightMove = false;
-                this.Harpoon = false;
             break;
             case 'w':
-                this.Harpoon = true;
+                // Se for pressionado, após aprox. 0,5s o utilizador pode voltar pressionar.
+                if (!this.antiSpam){
+                    this.antiSpam = true;
+                    this.Harpoon = true;
+                    this.startHarpoonAnimation();
+                    await this.sleep(460);
+                    this.stopHarpoonAnimation();
+                    await this.sleep(461)
+                    this.antiSpam = false;
+                    this.Harpoon = false;
+                    }
             break;
         }
     }
@@ -122,4 +148,6 @@ export default class Player2 {
             break;
         }
     }
+    // Função de espera
+    sleep(ms) { return new Promise( resolve => setTimeout(resolve, ms) ); }
 }
