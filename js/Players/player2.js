@@ -151,3 +151,12 @@ export default class Player2 {
     // Função de espera
     sleep(ms) { return new Promise( resolve => setTimeout(resolve, ms) ); }
 }
+
+
+
+
+
+
+
+
+
