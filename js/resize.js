@@ -5,7 +5,7 @@ export default class ResizeWindow {
             // A posição da imagem é alterada para "center -[((altura da imagem background-1) - área visível) a dividir por 2]px"
             if (window.innerHeight <= 1080) {
                 var value = "center " + "-" + (1079 - window.innerHeight) / 2 + "px";
-        
+
             } else {
                 var value = "center " + (window.innerHeight - 1079) / 2 + "px";
             }
@@ -16,3 +16,12 @@ export default class ResizeWindow {
         resizeWindow();
     }
 }
+
+
+
+
+
+
+
+
+

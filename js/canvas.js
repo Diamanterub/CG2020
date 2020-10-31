@@ -19,8 +19,10 @@ export default class GameCanvas {
         //Test remove later
         let levelNum = 3;
         let time = 100;
-        
+        //Test provalvelmente remover depois
+
         //Ele recebe o numero do nivel do menu e identifica o nome do level
+
         switch (levelNum) {
             case 1:
                 ////Placeholder Missing/Not official name
@@ -54,21 +56,24 @@ export default class GameCanvas {
             ctx.fillStyle = "white";
             ctx.font = "12px Amiga Forever Pro2"
             //Player1
-            ctx.fillText(`Player 1`,50, 320);
+            ctx.fillText(`Player 1`, 50, 320);
             //Faltam fazer as vidas
             //Player2
-            ctx.fillText(`Player 2`,430, 320);
+            ctx.fillText(`Player 2`, 430, 320);
             //Faltam fazer as vidas
             //General data
+            //Level
             ctx.fillText(`${level}`, 240, 320);
+            //Points
             ctx.fillText(`Points: ${points}`, 240, 350);
             ctx.font = "15px Amiga Forever Pro2"
-            ctx.fillText(`Time: ${time}`,410,30)
+            //Time
+            ctx.fillText(`Time: ${time}`, 410, 30)
             ctx.closePath();
             player2.Desenho();
             player1.Desenho();
             window.requestAnimationFrame(render);
-            
+
         }
         render();
 
@@ -85,7 +90,3 @@ export default class GameCanvas {
         window.addEventListener('keyup', ArrowReleased);
     }
 }
-    
-
-
-
