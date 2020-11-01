@@ -18,7 +18,7 @@ export default class GameCanvas {
         let level = "";
         //Test remove later
         let levelNum = 3;
-        let time = 100;
+        let time = 10;
         let gameisOver = false;
         //Test provalvelmente remover depois
 
@@ -81,8 +81,17 @@ export default class GameCanvas {
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, W, H);
                 ctx.fillStyle = "white";
-                tx.font = "20px Amiga Forever Pro2"
-                ctx.fillText("Game Over", 240, 180);;
+                ctx.font = "20px Amiga Forever Pro2"
+                ctx.fillText("Game Over", 240, 180);
+                ctx.fillText("Insert new coin", 240, 220);;
+                window.addEventListener("click", function()
+                {
+                    console.log("test")
+                    gameisOver = false;
+                    time = 100;
+                    window.requestAnimationFrame(render);
+
+                })
             }
 
         }
