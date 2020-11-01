@@ -44,9 +44,3 @@ export default class Background {
         this.ctx.closePath();
     }
 }
-
-
-
-
-
-

@@ -9,13 +9,3 @@ class App {
 }
 
 new App();
-
-
-
-
-
-
-
-
-
-
