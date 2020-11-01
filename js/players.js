@@ -1,3 +1,5 @@
+import Harpoons from './harpoon.js'
+
 export default class Player1 {
     constructor(ctx, W, H, HH, HW, P) {  
         this.ctx = ctx;
@@ -6,42 +8,42 @@ export default class Player1 {
         this.HH = HH;
         this.HW = HW;
 
-        this.P = P;
-        switch (P) {
-            case "P1":
-                this.Player = {
-                    "RightSprite" : '../../imgs/p1right.png',
-                    "LeftSprite" : '../../imgs/p1left.png',
-                    "StartPos" : this.W / 2 - this.W / 10,
-                    "StartRight" : true,
-                    "StartLeft" : false,
-                    "Color" : "#7080df",
-                    "RightKey" : 'ArrowRight',
-                    "LeftKey" : 'ArrowLeft',
-                    "UpKey": 'ArrowUp'
-                }
-            break;
-
-            case "P2":
-                this.Player = {
-                    "RightSprite" : '../../imgs/p2right.png',
-                    "LeftSprite" : '../../imgs/p2left.png',
-                    "StartPos" : this.W / 2 + this.W / 10,
-                    "StartRight" : false,
-                    "StartLeft" : true,
-                    "Color" : "#a2000b",
-                    "RightKey" : 'd',
-                    "LeftKey" : 'a',
-                    "UpKey": 'w'
-                }
-            break;
-        }
-
         // Imagens
         
         // Fonte das imagens das personagens (algumas foram alteradas, neste caso para o Player 2):
         // https://www.spriters-resource.com/pc_computer/cardsagaswars/sheet/106811/
         // Estes sprites não são para uso comercial.
+
+        this.P = P;
+        switch (P) {
+            case "P1":
+                this.Player = {
+                    "RightSprite" : '../imgs/p1right.png',
+                    "LeftSprite" : '../imgs/p1left.png',
+                    "StartPos" : this.W / 2 - this.W / 10,
+                    "StartRight" : true,
+                    "StartLeft" : false,
+                    "Color" : "#7080df",
+                    "RightKey" : ['ArrowRight', ''],
+                    "LeftKey" : ['ArrowLeft', ''],
+                    "UpKey": ['ArrowUp', '']
+                }
+            break;
+
+            case "P2":
+                this.Player = {
+                    "RightSprite" : '../imgs/p2right.png',
+                    "LeftSprite" : '../imgs/p2left.png',
+                    "StartPos" : this.W / 2 + this.W / 10,
+                    "StartRight" : false,
+                    "StartLeft" : true,
+                    "Color" : "#a2000b",
+                    "RightKey" : ['d', 'D'],
+                    "LeftKey" : ['a', 'A'],
+                    "UpKey": ['w', 'W']
+                }
+            break;
+        }
 
         this.Right = new Image();
         this.Right.src = this.Player.RightSprite; // Sprite para o Player 1 quando se move para a direita
@@ -57,11 +59,25 @@ export default class Player1 {
         this.pHWLS = 16; // Player Harpoon While Left Sprite
         var timerRight = null; // Temporazidor enquanto virada para direita
         var timerLeft = null; // Temporazidor enquanto virada para esquerda
-        this.antiSpam = false; // Anti Spam de clicar na animação do arpão
+        let shot = null; // Disparo em sí
+
+        this.CreateHarpoon = function(x, y) {
+            shot = new Harpoons(x, y, this.ctx);
+            function FireHarpoon() {
+                if (shot.update()) {
+                    shot.draw();
+                    window.requestAnimationFrame(FireHarpoon);
+                } else {
+                    shot = null;
+                }
+            }
+            FireHarpoon();
+        }
+
+        this.ReturnShot = function() { return shot; }
 
         this.RightMove = this.Player.StartRight; // Por default, o Player 1 está virado para o lado direito
         this.LeftMove = this.Player.StartLeft; // e estas variáveis servem para distinguir a que lado o jogador está virado.
-        this.Harpoon = false; // Esta é outra variável para o caso do arpão ser acionado.
 
         /* Quando o ecrã é carregado, é acionada uma função que irá executar outras funções relativas ao 
         movimento e respiração da personagem.*/
@@ -93,11 +109,11 @@ export default class Player1 {
         if (this.RightMove) {
             Turn = this.Right;
             Index = 23;
-            Dir = this.Harpoon ? this.pHWRS : this.pRMSB;
+            Dir = this.ReturnShot() != null ? this.pHWRS : this.pRMSB;
         } else {
             Turn = this.Left;
             Index = 64;
-            Dir = this.Harpoon ? this.pHWLS : this.pLMSB;
+            Dir = this.ReturnShot() != null ? this.pHWLS : this.pLMSB;
             LeftAdj += Center;
         }
         this.ctx.drawImage(Turn, DirCalc(Dir), 31, LeftAdj, 48, this.X - this.HW / 2, this.H - this.HH - 70, LeftAdj, 48);
@@ -133,40 +149,40 @@ export default class Player1 {
 
     async ArrowPressed(e) {
         switch (e.key) {
-            case this.Player.RightKey:
+            case this.Player.RightKey[0]:
+            case this.Player.RightKey[1]:
                 this.rightKey = true;
                 this.leftKey = false;
                 this.RightMove = true;
                 this.LeftMove = false;
-            break;            
-            case this.Player.LeftKey:
+            break;
+            case this.Player.LeftKey[0]:
+            case this.Player.LeftKey[1]:
                 this.leftKey = true;
                 this.rightKey = false;
                 this.LeftMove = true;
                 this.RightMove = false;
             break;
-            case this.Player.UpKey:
-                // Se for pressionado, após aprox. 0,5s o utilizador pode voltar pressionar.
-                if (!this.antiSpam){
-                this.antiSpam = true;
-                this.Harpoon = true;
-                this.startHarpoonAnimation();
-                await this.sleep(480);
-                this.stopHarpoonAnimation();
-                await this.sleep(481);
-                this.antiSpam = false;
-                this.Harpoon = false;
-                    }
+            case this.Player.UpKey[0]:
+            case this.Player.UpKey[1]:
+                if (this.ReturnShot() == null){
+                    this.startHarpoonAnimation();
+                    this.CreateHarpoon(this.X, this.H - this.HH - 70, this.ctx);
+                    await this.sleep(480);
+                    this.stopHarpoonAnimation();
+                }
             break;
         }
     }
     
     ArrowReleased(e) {
         switch (e.key) {
-            case this.Player.RightKey:
+            case this.Player.RightKey[0]:
+            case this.Player.RightKey[1]:
                 this.rightKey = false;
             break;
-            case this.Player.LeftKey:
+            case this.Player.LeftKey[0]:
+            case this.Player.LeftKey[1]:
                 this.leftKey = false;
             break;
         }

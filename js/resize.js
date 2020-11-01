@@ -16,12 +16,3 @@ export default class ResizeWindow {
         resizeWindow();
     }
 }
-
-
-
-
-
-
-
-
-
