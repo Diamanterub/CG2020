@@ -18,11 +18,11 @@ export default class GameCanvas {
         let level = "";
         //Test remove later
         let levelNum = 3;
-        let time = 10;
+        let time = 100;
         let gameisOver = false;
         //Test provalvelmente remover depois
 
-        //Ele recebe o numero do nivel do menu e identifica o nome do level
+        //Recebe o numero do nivel do menu e identifica o nome do level
 
         switch (levelNum) {
             case 1:
@@ -57,7 +57,7 @@ export default class GameCanvas {
                 ctx.fillRect(0, 300, 480, 60);
                 ctx.fill();
                 ctx.fillStyle = "white";
-                ctx.font = "12px Amiga Forever Pro2"
+                ctx.font = "12px retrogf"
                 //Player1
                 ctx.fillText(`Player 1`, 50, 320);
                 //Faltam fazer as vidas
@@ -69,7 +69,7 @@ export default class GameCanvas {
                 ctx.fillText(`${level}`, 240, 320);
                 //Points
                 ctx.fillText(`Points: ${points}`, 240, 350);
-                ctx.font = "15px Amiga Forever Pro2"
+                ctx.font = "15px retrogf"
                 //Time
                 ctx.fillText(`Time: ${time}`, 410, 30)
                 ctx.closePath();
@@ -81,9 +81,10 @@ export default class GameCanvas {
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, W, H);
                 ctx.fillStyle = "white";
-                ctx.font = "20px Amiga Forever Pro2"
+                ctx.font = "20px retrogf"
                 ctx.fillText("Game Over", 240, 180);
-                ctx.fillText("Insert new coin", 240, 220);;
+                ctx.font = "14px retrogf"
+                ctx.fillText("Insert coin", 240, 220);;
                 window.addEventListener("click", function()
                 {
                     console.log("test")
@@ -101,7 +102,7 @@ export default class GameCanvas {
             if (time > 0) {
                 time--;
             } else {
-                //For Debug process por favor comentam a mudança de estado da variável comentem isto 
+                // Quando o tempo acaba, o jogo termina (ainda por alterar, apenas para testar)
                 gameisOver = true
             }
         }

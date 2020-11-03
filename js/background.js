@@ -33,7 +33,7 @@ export default class Background {
             if (BgImgSprite == MaxVal) BgImgSprite = 0;
         }
 
-        this.GetBgSprite = function() { //função para o desenho 
+        this.GetBgSprite = function() { // Função para o desenho 
             return BgImgSprite;
         }
     }
