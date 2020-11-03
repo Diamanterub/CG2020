@@ -16,3 +16,7 @@ body {
     margin: auto;
     background-color: white;
 }
+@font-face {
+    font-family: retrogf;
+    src: url("amiga4everpro2.ttf"); /* A fonte apenas não pode ser utilizada para uso comercial. */
+}

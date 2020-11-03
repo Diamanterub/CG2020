@@ -55,8 +55,8 @@ export default class Player1 {
 
         this.pRMSB = 0; // Player Right Movement Sprite and Breath
         this.pLMSB = 17; // Player Left Movement Sprite and Breath
-        this.pHWRS = 1; // Player Harpoon While Right Sprite
-        this.pHWLS = 16; // Player Harpoon While Left Sprite
+        this.pHWRS = 2; // Player Harpoon While Right Sprite
+        this.pHWLS = 15; // Player Harpoon While Left Sprite
         var timerRight = null; // Temporazidor enquanto virada para direita
         var timerLeft = null; // Temporazidor enquanto virada para esquerda
         let shot = null; // Disparo em sí
@@ -83,12 +83,12 @@ export default class Player1 {
         movimento e respiração da personagem.*/
         window.addEventListener("load", this.myInit(), true); 
 
-        // Para a animação do arpão em 1 segundo são dados 28 frames, mas definimos o tempo para 0.5s, logo são dados 14 frames nesse tempo
+        // Para a animação do arpão em 1 segundo são dados 28 frames, mas definimos o tempo para 480ms, sendo usados 13 frames.
         this.startHarpoonAnimation = function() {
             timerRight = setInterval(() => {this.PHWRS()}, 1000/28);
             timerLeft = setInterval(() => {this.PHWLS()}, 1000/28);
         }
-        // Após passar um timeOut de 480ms, esta função é executada para parar a animação do arpão
+        // Após passar 480ms, esta função é executada para parar a animação do arpão
         this.stopHarpoonAnimation = function() {
             clearInterval(timerRight);
             clearInterval(timerLeft);
@@ -108,20 +108,23 @@ export default class Player1 {
         LeftAdj = 48; // Ajuste necessário no caso de o player estar virado para a esquerda
         if (this.RightMove) {
             Turn = this.Right;
-            Index = 23;
+            Index = 23; // Distancia em píxeis entre o espaço vazio e a "hitbox" do personagem no sprite
             Dir = this.ReturnShot() != null ? this.pHWRS : this.pRMSB;
         } else {
             Turn = this.Left;
-            Index = 64;
+            Index = 64; // Distancia em píxeis entre o espaço vazio e a "hitbox" do personagem no sprite
             Dir = this.ReturnShot() != null ? this.pHWLS : this.pLMSB;
             LeftAdj += Center;
         }
         this.ctx.drawImage(Turn, DirCalc(Dir), 31, LeftAdj, 48, this.X - this.HW / 2, this.H - this.HH - 70, LeftAdj, 48);
+        /* 31 - Distancia em píxeis entre o espaço vazio e a "hitbox" do personagem no sprite relativo ao eixo y.
+           48 - Altura da "hitbox" da personagem.
+           70 - Altura da caixa preta com detalhes + altura da borda do fundo */
         
         // Texto que indica o "nome" do jogador
         this.ctx.fillStyle = this.Player.Color;
         this.ctx.textAlign = 'center';
-        this.ctx.font = "10px Amiga Forever Pro2"
+        this.ctx.font = "10px retrogf"
         this.ctx.fillText(this.P, this.X+11, this.H - 120);
         this.ctx.fill();
         this.ctx.closePath();
@@ -139,12 +142,12 @@ export default class Player1 {
         this.pLMSB == 16 ? this.pLMSB = 17 : this.pLMSB--;
     }    
     PHWRS() { // No ficheiro de sprites (para a direita)
-        // são usados do 2º ao 15º (para a animação do arpão).
-        this.pHWRS == 13 ? this.pHWRS = 1 : this.pHWRS++;
+        // são usados do 3º ao 15º (para a animação do arpão).
+        this.pHWRS == 14 ? this.pHWRS = 2 : this.pHWRS++;
     }    
     PHWLS() { // No ficheiro de sprites de movimento e respiração (para a direita)
-        // são usados do 17º ao 4º (para a animação do arpão).
-        this.pHWLS == 4 ? this.pHWLS = 16 : this.pHWLS--; 
+        // são usados do 17º ao 5º (para a animação do arpão).
+        this.pHWLS == 3 ? this.pHWLS = 15 : this.pHWLS--; 
     }
 
     async ArrowPressed(e) {
