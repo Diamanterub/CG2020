@@ -15,12 +15,12 @@ export default class GameCanvas {
         let background = new Background(ctx, "B1");
         let player1 = new Players(ctx, W, H, HH, HW, "P1");
         let player2 = new Players(ctx, W, H, HH, HW, "P2");
-        let ball = new Ball(ctx,W,H,40,H-40,40,1)
+        let ball = new Ball(ctx,H,W,200,40,20,1) // Isto tem de ter variáveis
         let points = 0;
         let level = "";
         //Test remove later
         let levelNum = 3;
-        let time = 5;
+        let time = 100;
         let gameisOver = false;
         //Test provalvelmente remover depois
 
