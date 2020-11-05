@@ -1,5 +1,6 @@
 import Players from './players.js';
 import Background from './background.js';
+import Ball from './ball.js';
 
 export default class GameCanvas {
     constructor() {
@@ -14,6 +15,7 @@ export default class GameCanvas {
         let background = new Background(ctx, "B1");
         let player1 = new Players(ctx, W, H, HH, HW, "P1");
         let player2 = new Players(ctx, W, H, HH, HW, "P2");
+        let ball = new Ball(ctx,H,W,200,40,20,1) // Isto tem de ter variáveis
         let points = 0;
         let level = "";
         //Test remove later
@@ -51,30 +53,11 @@ export default class GameCanvas {
             if (!gameisOver) {
                 // Background
                 background.Draw();
-                // Barra com os detalhes do jogadores (por fazer)
-                ctx.beginPath();
-                ctx.fillStyle = "black";
-                ctx.fillRect(0, 300, 480, 60);
-                ctx.fill();
-                ctx.fillStyle = "white";
-                ctx.font = "12px retrogf"
-                //Player1
-                ctx.fillText(`Player 1`, 50, 320);
-                //Faltam fazer as vidas
-                //Player2
-                ctx.fillText(`Player 2`, 430, 320);
-                //Faltam fazer as vidas
-                //General data
-                //Level
-                ctx.fillText(`${level}`, 240, 320);
-                //Points
-                ctx.fillText(`Points: ${points}`, 240, 350);
-                ctx.font = "15px retrogf"
-                //Time
-                ctx.fillText(`Time: ${time}`, 410, 30)
-                ctx.closePath();
+                infoBar();
                 player2.Desenho();
                 player1.Desenho();
+                ball.update();
+                ball.draw();
                 window.requestAnimationFrame(render);
 
             } else if (gameisOver) {
@@ -84,15 +67,18 @@ export default class GameCanvas {
                 ctx.font = "20px retrogf"
                 ctx.fillText("Game Over", 240, 180);
                 ctx.font = "14px retrogf"
-                ctx.fillText("Insert coin", 240, 220);;
-                window.addEventListener("click", function()
-                {
-                    console.log("test")
+                ctx.fillText("Insert coin", 240, 220);
+                player1 = null
+                player2 = null
+                window.addEventListener("click", function () {
+                    console.log("Restarted")
                     gameisOver = false;
                     time = 100;
-                    window.requestAnimationFrame(render);
-
+                    player1 = new Players(ctx, W, H, HH, HW, "P1");
+                    player2 = new Players(ctx, W, H, HH, HW, "P2");
                 })
+                window.requestAnimationFrame(render);
+
             }
 
         }
@@ -105,6 +91,38 @@ export default class GameCanvas {
                 // Quando o tempo acaba, o jogo termina (ainda por alterar, apenas para testar)
                 gameisOver = true
             }
+        }
+
+        function infoBar() {
+            ctx.beginPath();
+            // Barra Preta
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 300, 480, 60);
+            ctx.fill();
+            //Detalhes da fonte
+            ctx.fillStyle = "white";
+            ctx.font = "12px retrogf"
+            //Player1
+            ctx.fillText(`Player 1`, 50, 320);
+            //Faltam fazer as vidas
+            
+            //Player2
+            ctx.fillText(`Player 2`, 430, 320);
+            //Faltam fazer as vidas
+
+            //
+            //
+            //General data
+            //Level
+            ctx.fillText(`${level}`, 240, 320);
+            //Points
+            ctx.fillText(`Points: ${points}`, 240, 350);
+            ctx.font = "15px retrogf"
+            //Time
+            ctx.fillText(`Time: ${time}`, 410, 30)
+            ctx.closePath();
+
+
         }
 
         function ArrowPressed(e) {
