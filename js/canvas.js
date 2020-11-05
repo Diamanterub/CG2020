@@ -19,9 +19,10 @@ export default class GameCanvas {
         //Test remove later
         let levelNum = 3;
         let time = 100;
+        let gameisOver = false;
         //Test provalvelmente remover depois
 
-        //Ele recebe o numero do nivel do menu e identifica o nome do level
+        //Recebe o numero do nivel do menu e identifica o nome do level
 
         switch (levelNum) {
             case 1:
@@ -35,6 +36,7 @@ export default class GameCanvas {
             case 3:
                 //Placeholder Missing/Not official name
                 level = "Waterfall"
+                setInterval(timer, 1000);
                 break;
 
             default:
@@ -46,36 +48,64 @@ export default class GameCanvas {
         function render() {
             // Apaga a cada renderização de modo a atualizar os frames
             ctx.clearRect(0, 0, W, H);
-            // Background
-            background.Draw();
-            // Barra com os detalhes do jogadores (por fazer)
-            ctx.beginPath();
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 300, 480, 60);
-            ctx.fill();
-            ctx.fillStyle = "white";
-            ctx.font = "12px Amiga Forever Pro2"
-            //Player1
-            ctx.fillText(`Player 1`, 50, 320);
-            //Faltam fazer as vidas
-            //Player2
-            ctx.fillText(`Player 2`, 430, 320);
-            //Faltam fazer as vidas
-            //General data
-            //Level
-            ctx.fillText(`${level}`, 240, 320);
-            //Points
-            ctx.fillText(`Points: ${points}`, 240, 350);
-            ctx.font = "15px Amiga Forever Pro2"
-            //Time
-            ctx.fillText(`Time: ${time}`, 410, 30)
-            ctx.closePath();
-            player2.Desenho();
-            player1.Desenho();
-            window.requestAnimationFrame(render);
+            if (!gameisOver) {
+                // Background
+                background.Draw();
+                // Barra com os detalhes do jogadores (por fazer)
+                ctx.beginPath();
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 300, 480, 60);
+                ctx.fill();
+                ctx.fillStyle = "white";
+                ctx.font = "12px retrogf"
+                //Player1
+                ctx.fillText(`Player 1`, 50, 320);
+                //Faltam fazer as vidas
+                //Player2
+                ctx.fillText(`Player 2`, 430, 320);
+                //Faltam fazer as vidas
+                //General data
+                //Level
+                ctx.fillText(`${level}`, 240, 320);
+                //Points
+                ctx.fillText(`Points: ${points}`, 240, 350);
+                ctx.font = "15px retrogf"
+                //Time
+                ctx.fillText(`Time: ${time}`, 410, 30)
+                ctx.closePath();
+                player2.Desenho();
+                player1.Desenho();
+                window.requestAnimationFrame(render);
+
+            } else if (gameisOver) {
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, W, H);
+                ctx.fillStyle = "white";
+                ctx.font = "20px retrogf"
+                ctx.fillText("Game Over", 240, 180);
+                ctx.font = "14px retrogf"
+                ctx.fillText("Insert coin", 240, 220);;
+                window.addEventListener("click", function()
+                {
+                    console.log("test")
+                    gameisOver = false;
+                    time = 100;
+                    window.requestAnimationFrame(render);
+
+                })
+            }
 
         }
         render();
+
+        function timer() {
+            if (time > 0) {
+                time--;
+            } else {
+                // Quando o tempo acaba, o jogo termina (ainda por alterar, apenas para testar)
+                gameisOver = true
+            }
+        }
 
         function ArrowPressed(e) {
             player1.ArrowPressed(e);
