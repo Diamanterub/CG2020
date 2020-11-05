@@ -1,5 +1,6 @@
 import Players from './players.js';
 import Background from './background.js';
+import Ball from './ball.js';
 
 export default class GameCanvas {
     constructor() {
@@ -14,6 +15,7 @@ export default class GameCanvas {
         let background = new Background(ctx, "B1");
         let player1 = new Players(ctx, W, H, HH, HW, "P1");
         let player2 = new Players(ctx, W, H, HH, HW, "P2");
+        let ball = new Ball(ctx,W,H,40,H-40,40,1)
         let points = 0;
         let level = "";
         //Test remove later
@@ -54,6 +56,8 @@ export default class GameCanvas {
                 infoBar();
                 player2.Desenho();
                 player1.Desenho();
+                ball.update();
+                ball.draw();
                 window.requestAnimationFrame(render);
 
             } else if (gameisOver) {
