@@ -15,7 +15,7 @@ export default class GameCanvas {
         let background = new Background(ctx, "B1");
         let player1 = new Players(ctx, W, H, HH, HW, "P1");
         let player2 = new Players(ctx, W, H, HH, HW, "P2");
-        let ball = new Ball(ctx,H,W,200,40,20,1) // Isto tem de ter variáveis
+        let ball = new Ball(ctx,H,W,200,60,20) // Isto tem de ter variáveis
         let points = 0;
         let level = "";
         //Test remove later
@@ -58,6 +58,7 @@ export default class GameCanvas {
                 player1.Desenho();
                 ball.update();
                 ball.draw();
+                //ball.checker();
                 window.requestAnimationFrame(render);
 
             } else if (gameisOver) {

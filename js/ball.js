@@ -1,41 +1,45 @@
 export default class Ball {
-    constructor(ctx, H, W, x, y, r, dir) {
+    constructor(ctx, H, W, x, y, r) {
         this.ctx = ctx;
         this.H = H;
         this.W = W;
         this.x = x;
         this.y = y;
         this.r = r;
-        this.dir = dir;
-        this.angle = 80 * Math.PI / 180;
-        this.vX = 7 * Math.cos(this.angle);
-        this.vY = 2 * Math.sin(this.angle);
-        this.a = 0.1; // Gravidade
-        //this.k_elast = 0.98; // Elasticidade
-        //this.cc = 0; // Contador de Colisões
-        //this.limit = false // Após a bola bater um número determinado de vezes, desativamos a elasticidade
+        this.angle = 75 * Math.PI / 180;
+        this.vX = 4* Math.cos(this.angle);
+        this.vY = 1 * Math.sin(this.angle);
+        this.a = 1/20; // Gravidade
+        this.k_elast = 0.98 // Elasticidade Inicial
+        this.cc = 0; // Contador de Colisões (após determinado número de colisões no solo, altera-se a elasticidade)
         this.ballSprite = new Image();
-        this.ballSprite.src = '../imgs/Pang_Ballons.png';
+        this.ballSprite.src = '../imgs/ballons.png';
+        this.b = 10; // Altura ou largura da borda
+        this.ibh = 60 // Altura da caixa de info
     }
     draw() {
         this.ctx.beginPath()
-        //Falta mais parametros
-        this.ctx.drawImage(this.ballSprite, 0, 0, 40, 40, this.x, this.y, 40, 40)
+        this.ctx.drawImage(this.ballSprite, 0, 0, 40, 40, this.x-this.r, this.y-this.r, 40, 40)
+        this.ctx.arc(this.x, this.y, this.r, 0, 2*Math.PI);
+        this.ctx.stroke();
     }
     update() {
-        // if circle hits the bottom of the Canvas
-        if (this.y > this.H - 70 - 40 /*|| this.y < 10*/) { // 70 = altura da info + borda e 40 é diametro da bola
-            this.vY = -0.98*this.vY;
-            this.vX -= 0.05 * this.vX;
+        // Após 10 colisões no solo, a elasticidade é alterada para que o salto esteja sempre ao mesmo nível
+        if(this.cc == 10) this.k_elast = 1;
+        // Colisão com o solo
+        if (this.y + this.r > this.H - this.ibh - this.b - 2) { // Se a posição da bola for abaixo do limite, a bola "salta" com efeito da elasticidade 
+            this.vY = -this.k_elast*this.vY; // Inversão do sentido do ângulo com elasticidade
+            this.vX -= 0.05 * this.vX; // Atrito
+            this.cc++; // Contador de colisões
         }
-        else if (this.x > this.W - 40 - 10 || this.x < 10) {
-            this.vX = -this.vX
+        // Colisão com os lados
+        else if (this.x > this.W - this.r - this.b || this.x < 30) {
+            this.vX = -this.vX // Inversão do sentido do ângulo
         }
         else {
-            this.vY += this.a;
+            this.vY += this.a; // Efeito de gravidade
         }
-        this.x += this.vX; // update circle X position (uniform motion)
-        this.y += this.vY; // update circle Y position 
-
+        this.x += this.vX; // Atualização da posição X da bola
+        this.y += this.vY; // Atualização da posição Y da bola
     }
 }
