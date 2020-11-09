@@ -1,5 +1,5 @@
 export default class Harpoon {
-    constructor(x, y, ctx, H) {
+    constructor(x, y, ctx) {
         this.ctx = ctx; // Canvas
         this.dx = x; // Initial X position
         this.dy = y; // Initial Y position

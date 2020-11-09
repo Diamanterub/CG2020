@@ -170,7 +170,7 @@ export default class Player1 {
             case this.Player.UpKey[1]:
                 if (this.ReturnShot() == null){
                     this.startHarpoonAnimation();
-                    this.CreateHarpoon(this.X, this.H - this.HH - 70, this.ctx);
+                    this.CreateHarpoon(this.RightMove ? this.X : this.X+15, this.H - this.HH - 70, this.ctx);
                     await this.sleep(480);
                     this.stopHarpoonAnimation();
                 }
