@@ -129,8 +129,8 @@ export default class Player1 {
         this.ctx.fill();
         this.ctx.closePath();
         // Limitação vertical relativa a área do canvas
-        if (this.rightKey && this.X < this.W - this.HW + this.HW / 2 - Center - Border) this.X++;
-        if (this.leftKey && this.X > 0 + this.HW / 2 - Center + Border) this.X--;
+        if (this.rightKey && this.X < this.W - this.HW + this.HW / 2 - Center - Border) this.X =+ this.X + 1;
+        if (this.leftKey && this.X > 0 + this.HW / 2 - Center + Border) this.X =+ this.X - 1;
     }
 
     PRMSB() { // No ficheiro de sprites do lado esquerdo
