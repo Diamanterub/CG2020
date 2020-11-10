@@ -15,7 +15,7 @@ export default class GameCanvas {
         let background = new Background(ctx, "B1");
         let player1 = new Players(ctx, W, H, HH, HW, "P1");
         let player2 = new Players(ctx, W, H, HH, HW, "P2");
-        let ball = new Ball(ctx,H,W,200,60,20) // Isto tem de ter variáveis
+        let balls = [];
         let points = 0;
         let level = "";
         //Test remove later
@@ -38,6 +38,7 @@ export default class GameCanvas {
             case 3:
                 //Placeholder Missing/Not official name
                 level = "Waterfall"
+                balls = [new Ball(ctx,H,W,200,60,40,1)]; // Isto tem de ter variáveis
                 setInterval(timer, 1000);
                 break;
 
@@ -56,9 +57,24 @@ export default class GameCanvas {
                 infoBar();
                 player2.Desenho();
                 player1.Desenho();
-                ball.update();
-                ball.draw();
-                //ball.checker();
+                for (let i = 0; i < balls.length; i++) {
+                    balls[i].update();
+                    balls[i].draw();    
+                    let collision1 = balls[i].collision(player1.ReturnShot());
+                    let collision2 = balls[i].collision(player2.ReturnShot());
+                    try {
+                        if (collision1 !== false) {
+                            balls[i] = new Ball(ctx,H,W,collision1[0],collision1[1],collision1[2]-collision1[3],1);
+                            balls.push(new Ball(ctx,H,W,collision1[0],collision1[1],collision1[2]-collision1[3],-1));
+                        }
+                        if (collision2 !== false) {
+                            balls[i] = new Ball(ctx,H,W,collision2[0],collision2[1],collision2[2]-collision2[3],1);
+                            balls.push(new Ball(ctx,H,W,collision2[0],collision2[1],collision2[2]-collision2[3],-1));
+                        }
+                    } catch (error) {
+                        balls.splice(i, 1);
+                    }
+                }
                 window.requestAnimationFrame(render);
 
             } else if (gameisOver) {
@@ -69,14 +85,16 @@ export default class GameCanvas {
                 ctx.fillText("Game Over", 240, 180);
                 ctx.font = "14px retrogf"
                 ctx.fillText("Insert coin", 240, 220);
-                player1 = null
-                player2 = null
+                player1 = null;
+                player2 = null;
+                balls = null;
                 window.addEventListener("click", function () {
                     console.log("Restarted")
                     gameisOver = false;
                     time = 100;
                     player1 = new Players(ctx, W, H, HH, HW, "P1");
                     player2 = new Players(ctx, W, H, HH, HW, "P2");
+                    balls = [new Ball(ctx,H,W,200,60,40,1)];
                 })
                 window.requestAnimationFrame(render);
 
