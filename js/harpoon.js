@@ -16,12 +16,21 @@ export default class Harpoon {
     }
 
     update() {
-        if (this.dy > 10) {
+        if (this.dy > 10 && !this.hit) {
             this.dy -= 3;
             this.sh += 3;
             return true;
         } else {
             return false;
+        }
+    }
+
+    collision(ball_x, ball_y, ball_d) {
+        if (ball_x + ball_d < this.dx || ball_x > this.dx + this.sw || ball_y + ball_d < this.dy) {
+            return false;
+        } else {
+            this.hit = true;
+            return true; 
         }
     }
 }
