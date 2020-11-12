@@ -6,63 +6,50 @@ export default class Ball {
         this.x = x;
         this.y = y;
         this.d = d; // diametro
-        this.angle; // ângulo do movimentoinfo
         this.pop; // Quantidade a subtrair ao tamanho quando rebenta
         this.jump; //altura a que cada bola deve subir
         this.sX, this.sY; // ponto "0, 0" no sprite para se desenhar a bola
-        this.max_cc; // Valor máximo ao contador
-        this.k_elast; // Elasticidade Inicial
+        this.value;
         try { this.set(); // define as variáveis
         } catch (error) { throw(error); } // ou cancela a criação da bola
+        this.angle = 75;
         this.vX = 4 * Math.cos(this.angle * Math.PI / 180) * dir;
         this.vY = -1 * Math.sin(this.angle * Math.PI / 180);
         this.g = 0; // Gravidade
-        this.cc = 0; // Contador de Colisões (após determinado número de colisões no solo, altera-se a elasticidade)
         this.ballSprite = new Image();
         this.ballSprite.src = '../imgs/ballons.png';
         this.b = 10; // Altura ou largura da borda
         this.ibh = 60; // Altura da caixa de info
+        this.safezone = 230;
     }
     set() {
         switch (this.d) {
             case 40:
-                this.jump = 48;
-                this.angle = 75;
+                this.jump = -4;
                 this.sX = 0;
                 this.sY = 0;
                 this.pop = 14;
-                this.max_cc = 5;
-                this.k_elast = 0.98;
                 break;
                 
             case 26:
-                this.jump = (this.y < 160 ? this.y-10 : this.y - 50);
-                this.angle = 75;
+                this.jump = -3.6;
                 this.sX = 41;
                 this.sY = 7;
                 this.pop = 12;
-                this.max_cc = 3;
-                this.k_elast = 0.94;
                 break;
         
             case 14:
-                this.jump = (this.y < 180 ? this.y-10 : this.y - 50);
-                this.angle = 75;
+                this.jump = -3.3;
                 this.sX = 68;
                 this.sY = 13;
                 this.pop = 7;
-                this.max_cc = 2;
-                this.k_elast = 0.90;
                 break;
                 
             case 7:
-                this.jump = (this.y < 200 ? this.y-10 : this.y - 50);
-                this.angle = 75;
+                this.jump = -3;
                 this.sX = 83;
                 this.sY = 16;
                 this.pop = 1;
-                this.max_cc = 2;
-                this.k_elast = 0.90;
                 break;
 
             default:
@@ -76,16 +63,12 @@ export default class Ball {
         this.ctx.stroke();
     }
     update() {
-        if (this.jump >= this.y) { this.g = 1/20; }
-        // Após 10 colisões no solo, a elasticidade é alterada para que o salto esteja sempre ao mesmo nível
-        
-        if(this.cc == this.max_cc) this.k_elast = 1;
+        if (this.safezone >= this.y) { this.g = 1/20; }
         // Colisão com o solo
         if (this.y + this.d > this.H - this.ibh - this.b - 2) { // Se a posição da bola for abaixo do limite, a bola "salta" com efeito da elasticidade 
             this.y = this.H - this.ibh - this.b - 2 - this.d; //garantir que a bola não fica presa no chão
-            this.vY = -this.k_elast*this.vY; // Inversão do sentido do ângulo com elasticidade
-            this.cc++;
-            console.log(this.k_elast);
+            this.vY = -this.vY; // Inversão do sentido do ângulo com elasticidade
+            this.vY = this.jump * Math.sin(this.angle * Math.PI / 180);
         }
         // Colisão com os lados
         else if (this.x > this.W - this.d - this.b || this.x < this.b) {
