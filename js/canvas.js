@@ -57,7 +57,7 @@ export default class GameCanvas {
                 infoBar();
                 player2.Desenho();
                 player1.Desenho();
-                for (let i = 0; i < balls.length; i++) {
+                for (let i = balls.length - 1; i >= 0; i--) {
                     balls[i].update();
                     balls[i].draw();    
                     let collision1 = balls[i].collision(player1.ReturnShot());
