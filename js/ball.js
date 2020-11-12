@@ -25,7 +25,7 @@ export default class Ball {
     set() {
         switch (this.d) {
             case 40:
-                this.jump = 50;
+                this.jump = 48;
                 this.angle = 75;
                 this.sX = 0;
                 this.sY = 0;
@@ -33,24 +33,24 @@ export default class Ball {
                 break;
                 
             case 26:
-                this.jump = 100;
-                this.angle = 70;
+                this.jump = (this.y < 160 ? this.y-10 : this.y - 50);
+                this.angle = 75;
                 this.sX = 41;
                 this.sY = 7;
                 this.pop = 12;
                 break;
         
             case 14:
-                this.jump = 150;
-                this.angle = 65;
+                this.jump = (this.y < 180 ? this.y-10 : this.y - 50);
+                this.angle = 75;
                 this.sX = 68;
                 this.sY = 13;
                 this.pop = 7;
                 break;
                 
             case 7:
-                this.jump = 200;
-                this.angle = 60;
+                this.jump = (this.y < 200 ? this.y-10 : this.y - 50);
+                this.angle = 75;
                 this.sX = 83;
                 this.sY = 16;
                 this.pop = 1;
@@ -68,14 +68,14 @@ export default class Ball {
     }
     update() {
         if (this.jump >= this.y) { this.g = 1/20; }
-        if (this.jump > this.y && this.cc > 0) { this.vY = -this.vY }
+        //if (this.jump > this.y && this.cc > 0) { this.vY = -this.vY } (Remover)
         // Após 10 colisões no solo, a elasticidade é alterada para que o salto esteja sempre ao mesmo nível
-        if(this.cc == 10 || this.jump != 100) this.k_elast = 1;
+        if(this.cc == 10) this.k_elast = 1;
         // Colisão com o solo
         if (this.y + this.d > this.H - this.ibh - this.b - 2) { // Se a posição da bola for abaixo do limite, a bola "salta" com efeito da elasticidade 
             this.y = this.H - this.ibh - this.b - 2 - this.d; //garantir que a bola não fica presa no chão
             this.vY = -this.k_elast*this.vY; // Inversão do sentido do ângulo com elasticidade
-            this.vX -= 0.05 * this.vX; // Atrito
+            // this.vX -= 0.05 * this.vX; // Atrito (Remover)
             this.cc++; // Contador de colisões
         }
         // Colisão com os lados
