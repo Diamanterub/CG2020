@@ -10,12 +10,13 @@ export default class Ball {
         this.pop; // Quantidade a subtrair ao tamanho quando rebenta
         this.jump; //altura a que cada bola deve subir
         this.sX, this.sY; // ponto "0, 0" no sprite para se desenhar a bola
+        this.max_cc; // Valor máximo ao contador
+        this.k_elast; // Elasticidade Inicial
         try { this.set(); // define as variáveis
         } catch (error) { throw(error); } // ou cancela a criação da bola
         this.vX = 4 * Math.cos(this.angle * Math.PI / 180) * dir;
         this.vY = -1 * Math.sin(this.angle * Math.PI / 180);
         this.g = 0; // Gravidade
-        this.k_elast = 0.98 // Elasticidade Inicial
         this.cc = 0; // Contador de Colisões (após determinado número de colisões no solo, altera-se a elasticidade)
         this.ballSprite = new Image();
         this.ballSprite.src = '../imgs/ballons.png';
@@ -30,6 +31,8 @@ export default class Ball {
                 this.sX = 0;
                 this.sY = 0;
                 this.pop = 14;
+                this.max_cc = 5;
+                this.k_elast = 0.98;
                 break;
                 
             case 26:
@@ -38,6 +41,8 @@ export default class Ball {
                 this.sX = 41;
                 this.sY = 7;
                 this.pop = 12;
+                this.max_cc = 3;
+                this.k_elast = 0.94;
                 break;
         
             case 14:
@@ -46,6 +51,8 @@ export default class Ball {
                 this.sX = 68;
                 this.sY = 13;
                 this.pop = 7;
+                this.max_cc = 2;
+                this.k_elast = 0.90;
                 break;
                 
             case 7:
@@ -54,6 +61,8 @@ export default class Ball {
                 this.sX = 83;
                 this.sY = 16;
                 this.pop = 1;
+                this.max_cc = 2;
+                this.k_elast = 0.90;
                 break;
 
             default:
@@ -68,15 +77,15 @@ export default class Ball {
     }
     update() {
         if (this.jump >= this.y) { this.g = 1/20; }
-        //if (this.jump > this.y && this.cc > 0) { this.vY = -this.vY } (Remover)
         // Após 10 colisões no solo, a elasticidade é alterada para que o salto esteja sempre ao mesmo nível
-        if(this.cc == 10) this.k_elast = 1;
+        
+        if(this.cc == this.max_cc) this.k_elast = 1;
         // Colisão com o solo
         if (this.y + this.d > this.H - this.ibh - this.b - 2) { // Se a posição da bola for abaixo do limite, a bola "salta" com efeito da elasticidade 
             this.y = this.H - this.ibh - this.b - 2 - this.d; //garantir que a bola não fica presa no chão
             this.vY = -this.k_elast*this.vY; // Inversão do sentido do ângulo com elasticidade
-            // this.vX -= 0.05 * this.vX; // Atrito (Remover)
-            this.cc++; // Contador de colisões
+            this.cc++;
+            console.log(this.k_elast);
         }
         // Colisão com os lados
         else if (this.x > this.W - this.d - this.b || this.x < this.b) {
