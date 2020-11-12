@@ -60,6 +60,7 @@ export default class Player1 {
         var timerRight = null; // Temporazidor enquanto virada para direita
         var timerLeft = null; // Temporazidor enquanto virada para esquerda
         let shot = null; // Disparo em sí
+        this.speed = 1.3;
 
         this.CreateHarpoon = function(x, y) {
             shot = new Harpoons(x, y, this.ctx);
@@ -129,8 +130,8 @@ export default class Player1 {
         this.ctx.fill();
         this.ctx.closePath();
         // Limitação vertical relativa a área do canvas
-        if (this.rightKey && this.X < this.W - this.HW + this.HW / 2 - Center - Border) this.X =+ this.X + 1;
-        if (this.leftKey && this.X > 0 + this.HW / 2 - Center + Border) this.X =+ this.X - 1;
+        if (this.rightKey && this.X < this.W - this.HW + this.HW / 2 - Center - Border) this.X =+ this.X + this.speed;
+        if (this.leftKey && this.X > 0 + this.HW / 2 - Center + Border) this.X =+ this.X - this.speed;
     }
 
     PRMSB() { // No ficheiro de sprites do lado esquerdo
