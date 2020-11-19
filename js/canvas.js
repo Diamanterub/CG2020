@@ -78,14 +78,15 @@ export default class GameCanvas {
                     let collision2 = player2 != null ? balls[i].collision(player2.ReturnShot()) : false;
                     try {
                         if (collision1 !== false) {
+                            points += collision1[4];
                             balls[i] = new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], 1);
                             balls.push(new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], -1));
-                            points += collision1[4];
+                            break;
                         }
                         if (collision2 !== false) {
+                            points += collision2[4];
                             balls[i] = new Ball(ctx, H, W, collision2[0], collision2[1], collision2[2] - collision2[3], 1);
                             balls.push(new Ball(ctx, H, W, collision2[0], collision2[1], collision2[2] - collision2[3], -1));
-                            points += collision2[4];
                         }
                     } catch (error) {
                         balls.splice(i, 1);
