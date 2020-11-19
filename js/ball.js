@@ -23,7 +23,7 @@ export default class Ball {
         this.ibh = 60; // Altura da caixa de info
         this.safezone = 230; // Altura a que as bolas sobem se forem rebentas muito perto do player
         this.slow = 1; // Abrandar as bolas quando ativado o PowerUp
-        this.fixSlow = 0; // Corrigir a altura quando o PowerUp Slow é ativado
+        this.fixSlow = 1; // Corrigir a altura quando o PowerUp Slow é ativado
     }
     set() {
         switch (this.d) {
@@ -102,7 +102,7 @@ export default class Ball {
             this.fixSlow = 1.2;
         } else {
             this.slow = 1;
-            this.fixSlow = 0;    
+            this.fixSlow = 1;    
         }
     }
 }
