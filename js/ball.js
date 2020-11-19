@@ -1,11 +1,12 @@
 export default class Ball {
-    constructor(ctx, H, W, x, y, d, dir) {
+    constructor(ctx, H, W, x, y, d, dir, c) {
         this.ctx = ctx;
         this.H = H;
         this.W = W;
         this.x = x;
         this.y = y;
         this.d = d; // diametro
+        this.c = c; // cor
         this.pop; // Quantidade a subtrair ao tamanho quando rebenta
         this.jump; //altura a que cada bola deve subir
         this.sX, this.sY; // ponto "0, 0" no sprite para se desenhar a bola
@@ -20,7 +21,9 @@ export default class Ball {
         this.ballSprite.src = '../imgs/ballons.png';
         this.b = 10; // Altura ou largura da borda
         this.ibh = 60; // Altura da caixa de info
-        this.safezone = 230;
+        this.safezone = 230; // Altura a que as bolas sobem se forem rebentas muito perto do player
+        this.slow = 1; // Abrandar as bolas quando ativado o PowerUp
+        this.fixSlow = 0; // Corrigir a altura quando o PowerUp Slow é ativado
     }
     set() {
         switch (this.d) {
@@ -62,7 +65,7 @@ export default class Ball {
     }
     draw() {
         this.ctx.beginPath()
-        this.ctx.drawImage(this.ballSprite, this.sX, this.sY, this.d, this.d, this.x, this.y, this.d, this.d)
+        this.ctx.drawImage(this.ballSprite, this.sX, this.sY + this.c, this.d, this.d, this.x, this.y, this.d, this.d)
         this.ctx.arc(this.x + this.d/2, this.y + this.d/2, this.d/2, 0, 2*Math.PI);
         this.ctx.stroke();
     }
@@ -72,7 +75,7 @@ export default class Ball {
         if (this.y + this.d > this.H - this.ibh - this.b - 2) { // Se a posição da bola for abaixo do limite, a bola "salta" com efeito da elasticidade 
             this.y = this.H - this.ibh - this.b - 2 - this.d; //garantir que a bola não fica presa no chão
             this.vY = -this.vY; // Inversão do sentido do ângulo com elasticidade
-            this.vY = this.jump * Math.sin(this.angle * Math.PI / 180);
+            this.vY = this.jump * this.fixSlow * Math.sin(this.angle * Math.PI / 180);
         }
         // Colisão com os lados
         else if (this.x > this.W - this.d - this.b || this.x < this.b) {
@@ -82,14 +85,24 @@ export default class Ball {
         else {
             this.vY += this.g; // Efeito de gravidade
         }
-        this.x += this.vX; // Atualização da posição X da bola
-        this.y += this.vY; // Atualização da posição Y da bola
+        this.x += this.vX / this.slow; // Atualização da posição X da bola
+        this.y += this.vY / this.slow; // Atualização da posição Y da bola
     }
     collision(entity) {
         if (entity != null) {
-            return entity.collision(this.x, this.y, this.d) ? [this.x, this.y, this.d, this.pop, this.points] : false;
+            return entity.collision(this.x, this.y, this.d) ? [this.x, this.y, this.d, this.pop, this.points, this.c] : false;
         } else {
             return false;
+        }
+    }
+
+    PowerUpSlow(state) {
+        if (state) {
+            this.slow = 2;
+            this.fixSlow = 1.2;
+        } else {
+            this.slow = 1;
+            this.fixSlow = 0;    
         }
     }
 }

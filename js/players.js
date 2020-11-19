@@ -61,12 +61,13 @@ export default class Player1 {
         var timerRight = null; // Temporazidor enquanto virada para direita
         var timerLeft = null; // Temporazidor enquanto virada para esquerda
         let shot = null; // Disparo em sí
-        this.speed = 1.3;
+        this.fireRate = 1 // Velocidade do arpão
+        this.speed = 1.3; // Velocidade do jogador
         this.invencibility = false; // Invencibilidade após ser atingido
         this.invencFrame = 0; // Frame a mostrar quando invencivel
 
         this.CreateHarpoon = function (x, y) {
-            shot = new Harpoons(x, y, this.ctx);
+            shot = new Harpoons(x, y, this.ctx, this.fireRate);
             function FireHarpoon() {
                 if (shot.update()) {
                     shot.draw();
@@ -217,8 +218,8 @@ export default class Player1 {
         let Center = 11; // Variável igual ao Center no Desenho()
         let align = Center*1.3; // Alinhar a hitbox com o jogador
         align += this.RightMove ? 0 : 2; // Correção Esquerda/Direita
-        if (ball_x + ball_d < this.X - this.HW / 2 + Center // Completamente à esquerda
-        || ball_x > this.X + Center // Completamente à direita
+        if (ball_x + ball_d < this.X - this.HW / 2 + align // Completamente à esquerda
+        || ball_x > this.X + align // Completamente à direita
         || ball_y + ball_d < this.H - this.HH - 70 // Completamente acima
         || this.invencibility) { //Invencivel
             return false;
@@ -239,5 +240,21 @@ export default class Player1 {
     // Função de espera
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    PowerUps(power, state) {
+        switch (power) {
+            case "speed":
+                this.speed = state ? 2.6 : 1.3;
+                break;
+
+            case "invenc":
+                this.hit();
+                break;
+
+            case "fastfire":
+                this.fireRate = state ? 2 : 1;
+                break;
+        }
     }
 }
