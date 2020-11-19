@@ -25,7 +25,8 @@ export default class GameCanvas {
         let lifesPlayer1 = 3;
         let lifesPlayer2 = 3;
         setInterval(timer,1000);
-        levelMech(levelNum)
+        levelMech(levelNum);
+
         // Funções
         function render() {
             // Apaga a cada renderização de modo a atualizar os frames
@@ -56,14 +57,14 @@ export default class GameCanvas {
                     try {
                         if (collision1 !== false) {
                             points += collision1[4];
-                            balls[i] = new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], 1);
-                            balls.push(new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], -1));
+                            balls[i] = new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], 1, collision1[5]);
+                            balls.push(new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], -1, collision1[5]));
                             break;
                         }
                         if (collision2 !== false) {
                             points += collision2[4];
-                            balls[i] = new Ball(ctx, H, W, collision2[0], collision2[1], collision2[2] - collision2[3], 1);
-                            balls.push(new Ball(ctx, H, W, collision2[0], collision2[1], collision2[2] - collision2[3], -1));
+                            balls[i] = new Ball(ctx, H, W, collision2[0], collision2[1], collision2[2] - collision2[3], 1, collision2[5]);
+                            balls.push(new Ball(ctx, H, W, collision2[0], collision2[1], collision2[2] - collision2[3], -1, collision2[5]));
                         }
                     } catch (error) {
                         balls.splice(i, 1);
@@ -74,7 +75,6 @@ export default class GameCanvas {
                     } catch (error) {}
                 }
                 if (balls.length == 0) {
-
                     if (levelNum < 3) {
                         levelNum++;
                         player1 = null;
@@ -118,26 +118,26 @@ export default class GameCanvas {
             lifesPlayer2 = 3;
             levelMech(levelNum)
         }
-        function levelMech(id)
-        {            
+        
+        function levelMech(id) {            
             switch (id) {
                 case 1:
                     level = "Village-1";
                     background = new Background(ctx, "B1");
-                    balls = [new Ball(ctx, H, W, 200, 60, 40, 1)];
+                    balls = [new Ball(ctx, H, W, 200, 60, 40, 1, 0)];
                     break;
                 case 2:
                     level = "Ruins-2"
                     background = new Background(ctx, "B2");
-                    balls = [new Ball(ctx, H, W, 100, 60, 40, 1)];
-                    balls.push(new Ball(ctx, H, W, 300, 60, 40, 1));
+                    balls = [new Ball(ctx, H, W, 100, 60, 40, 1, 44)];
+                    balls.push(new Ball(ctx, H, W, 300, 60, 40, 1, 44));
                     break;
                 case 3:
                     level = "Waterfall-3"
                     background = new Background(ctx, "B3");
-                    balls = [new Ball(ctx, H, W, 100, 60, 40, 1)];
-                    balls.push(new Ball(ctx, H, W, 200, 60, 40, 1));
-                    balls.push(new Ball(ctx, H, W, 300, 60, 40, 1)); 
+                    balls = [new Ball(ctx, H, W, 100, 60, 40, 1, 88)];
+                    balls.push(new Ball(ctx, H, W, 200, 60, 40, 1, 88));
+                    balls.push(new Ball(ctx, H, W, 300, 60, 40, 1, 88)); 
                     break;
 
                 default:
@@ -146,7 +146,6 @@ export default class GameCanvas {
             }
         }
         
-
         function timer() {
             if (time > 0) {
                 time--;
@@ -196,5 +195,46 @@ export default class GameCanvas {
         }
         window.addEventListener('keydown', ArrowPressed);
         window.addEventListener('keyup', ArrowReleased);
+
+        async function CatchPowerUp(power, player) {
+            switch (power) {
+                case "speed":
+                    player.PowerUps("speed", true);
+                    await sleep(3000);
+                    player.PowerUps("speed", false);
+                    break;
+    
+                case "invenc":
+                    player.PowerUps("invenc");
+                    break;
+    
+                case "fastfire":
+                    player.PowerUps("fastfire", true);
+                    await sleep(3000);
+                    player.PowerUps("fastfire", false);
+                    break;
+
+                case "slow":
+                    balls.forEach(ball => { ball.PowerUpSlow(true); });
+                    await sleep(3000)
+                    balls.forEach(ball => { ball.PowerUpSlow(false); });
+                    break;
+
+                case "time":
+                    time += 15;
+                    break;
+
+                case "life":
+                    player == 1 ? 
+                    lifesPlayer1 += lifesPlayer1 < 3 ? 1 : 0
+                    : lifesPlayer2 += lifesPlayer2 < 3 ? 1 : 0;
+                    break;
+            }
+        }
+
+        // Função de espera
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
     }
 }
