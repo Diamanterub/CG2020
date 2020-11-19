@@ -1,12 +1,10 @@
 import Harpoons from './harpoon.js'
 
 export default class Player1 {
-    constructor(ctx, W, H, HH, HW, P) {
+    constructor(ctx, W, H, P) {
         this.ctx = ctx;
         this.W = W;
         this.H = H;
-        this.HH = HH;
-        this.HW = HW;
 
         // Imagens
 
@@ -54,6 +52,8 @@ export default class Player1 {
         this.leftKey = false;
         this.X = this.Player.StartPos; // Posição do Player 1 relativa a largura do ambiente
 
+        this.HH = 47; // Altura da Hitbox e das personagens
+        this.HW = 73; // Largura da hitbox e das personagens
         this.pRMSB = 0; // Player Right Movement Sprite and Breath
         this.pLMSB = 17; // Player Left Movement Sprite and Breath
         this.pHWRS = 2; // Player Harpoon While Right Sprite
@@ -62,10 +62,11 @@ export default class Player1 {
         var timerLeft = null; // Temporazidor enquanto virada para esquerda
         let shot = null; // Disparo em sí
         this.speed = 1.3;
+        this.invencibility = false; // Invencibilidade após ser atingido
+        this.invencFrame = 0; // Frame a mostrar quando invencivel
 
         this.CreateHarpoon = function (x, y) {
             shot = new Harpoons(x, y, this.ctx);
-
             function FireHarpoon() {
                 if (shot.update()) {
                     shot.draw();
@@ -77,9 +78,7 @@ export default class Player1 {
             FireHarpoon();
         }
 
-        this.ReturnShot = function () {
-            return shot;
-        }
+        this.ReturnShot = function () { return shot; }
 
         this.RightMove = this.Player.StartRight; // Por default, o Player 1 está virado para o lado direito
         this.LeftMove = this.Player.StartLeft; // e estas variáveis servem para distinguir a que lado o jogador está virado.
@@ -90,12 +89,8 @@ export default class Player1 {
 
         // Para a animação do arpão em 1 segundo são dados 28 frames, mas definimos o tempo para 480ms, sendo usados 13 frames.
         this.startHarpoonAnimation = function () {
-            timerRight = setInterval(() => {
-                this.PHWRS()
-            }, 1000 / 28);
-            timerLeft = setInterval(() => {
-                this.PHWLS()
-            }, 1000 / 28);
+            timerRight = setInterval(() => { this.PHWRS() }, 1000 / 28);
+            timerLeft = setInterval(() => { this.PHWLS() }, 1000 / 28);
         }
         // Após passar 480ms, esta função é executada para parar a animação do arpão
         this.stopHarpoonAnimation = function () {
@@ -105,15 +100,12 @@ export default class Player1 {
     }
     // São acionadas as funções para o movimento e respiração da personagem.
     myInit() {
-        setInterval(() => {
-            this.PRMSB()
-        }, 1000 / 2), setInterval(() => {
-            this.PLMSB()
-        }, 1000 / 2)
+        setInterval(() => { this.PRMSB() }, 1000 / 2),
+        setInterval(() => { this.PLMSB() }, 1000 / 2)
     }
 
     Desenho() {
-        this.ctx.beginPath();
+        //this.invencFrame = this.invencibility ? this.RightMove ? 1 : -1 : 0;
         let Turn, //Virar para a direita ou esquerda
             Index, //Index no sprite
             Center = 11, // Esta variável serve para centrar a personagem em função a abscissa do sprite
@@ -133,7 +125,18 @@ export default class Player1 {
             Dir = this.ReturnShot() != null ? this.pHWLS : this.pLMSB;
             LeftAdj += Center;
         }
-        this.ctx.drawImage(Turn, DirCalc(Dir), 31, LeftAdj, 48, this.X - this.HW / 2, this.H - this.HH - 70, LeftAdj, 48);
+        // HITBOX
+        // this.ctx.beginPath()
+        // this.ctx.moveTo(this.X - this.HW / 2 + Center, this.H - this.HH - 70)
+        // this.ctx.lineTo(this.X + Center, this.H - this.HH - 70)
+        // this.ctx.lineTo(this.X + Center, this.H - 70)
+        // this.ctx.lineTo(this.X - this.HW / 2 + Center, this.H - 70)
+        // this.ctx.lineTo(this.X - this.HW / 2 + Center, this.H - this.HH  - 70)
+        // this.ctx.stroke()
+        if (!this.invencFrame) {
+            this.ctx.beginPath();
+            this.ctx.drawImage(Turn, DirCalc(Dir), 31, LeftAdj, 48, this.X - this.HW / 2, this.H - this.HH - 70, LeftAdj, 48);
+        }
         /* 31 - Distancia em píxeis entre o espaço vazio e a "hitbox" do personagem no sprite relativo ao eixo y.
            48 - Altura da "hitbox" da personagem.
            70 - Altura da caixa preta com detalhes + altura da borda do fundo */
@@ -142,7 +145,7 @@ export default class Player1 {
         this.ctx.fillStyle = this.Player.Color;
         this.ctx.textAlign = 'center';
         this.ctx.font = "10px retrogf"
-        this.ctx.fillText(this.P, this.X + 11, this.H - 120);
+        this.ctx.fillText(this.P, this.X - 6, this.H - 120);
         this.ctx.fill();
         this.ctx.closePath();
         // Limitação vertical relativa a área do canvas
@@ -185,7 +188,7 @@ export default class Player1 {
                 break;
             case this.Player.UpKey[0]:
             case this.Player.UpKey[1]:
-                if (this.ReturnShot() == null) {
+                if (this.ReturnShot() == null && !this.invencibility) {
                     this.startHarpoonAnimation();
                     this.CreateHarpoon(this.RightMove ? this.X : this.X + 15, this.H - this.HH - 70, this.ctx);
                     await this.sleep(480);
@@ -208,25 +211,26 @@ export default class Player1 {
         }
     }
 
-
-
     collision(ball_x, ball_y, ball_d) {
-        if (ball_x + ball_d > this.HW || ball_x < 0 || ball_y > this.HH) {
+        let Center = 11; // Variável igual ao Center no Desenho()
+        if (ball_x + ball_d < this.X - this.HW / 2 + Center // Completamente à esquerda
+        || ball_x > this.X + Center // Completamente à direita
+        || ball_y + ball_d < this.H - this.HH - 70 // Completamente acima
+        || this.invencibility) { //Invencivel
             return false;
         } else {
+            this.hit();
             return true;
         }
     }
 
-
-    
-
-
-
-
-    
-
-
+    async hit() {
+        this.invencibility = true;
+        let flash = setInterval(() => { this.invencFrame = !this.invencFrame; }, 100);
+        await this.sleep(3000);
+        this.invencibility = false;
+        clearInterval(flash);
+    }
 
     // Função de espera
     sleep(ms) {

@@ -9,12 +9,10 @@ export default class GameCanvas {
 
         const W = canvas.width;
         const H = canvas.height;
-        const HH = 47; // Altura da Hitbox e das personagens
-        const HW = 37; // Largura da hitbox e das personagens
 
         let background = new Background(ctx, "B1");
-        let player1 = new Players(ctx, W, H, HH, HW, "P1");
-        let player2 = new Players(ctx, W, H, HH, HW, "P2");
+        let player1 = new Players(ctx, W, H, "P1");
+        let player2 = new Players(ctx, W, H, "P2");
         let lifeImg = new Image();
         lifeImg.src = "../imgs/lives.png";
         let balls = [];
@@ -22,7 +20,7 @@ export default class GameCanvas {
         let level = "";
         //Test remove later
         let levelNum = 3;
-        let time = 10;
+        let time = 120;
         let gameisOver = false;
         let lifesPlayer1 = 3;
         let lifesPlayer2 = 3;
@@ -56,15 +54,16 @@ export default class GameCanvas {
             // Apaga a cada renderização de modo a atualizar os frames
             ctx.clearRect(0, 0, W, H);
             if (!gameisOver) {
+                window.removeEventListener("click", restart);
                 // Background
                 background.Draw();
                 if (lifesPlayer1 == 0) {
-
+                    player1 = null;
                 } else {
                     player1.Desenho();
                 }
                 if (lifesPlayer2 == 0) {
-
+                    player2 = null;
                 } else {
                     player2.Desenho();
                 }
@@ -75,8 +74,8 @@ export default class GameCanvas {
                 for (let i = balls.length - 1; i >= 0; i--) {
                     balls[i].update();
                     balls[i].draw();
-                    let collision1 = balls[i].collision(player1.ReturnShot());
-                    let collision2 = balls[i].collision(player2.ReturnShot());
+                    let collision1 = player1 != null ? balls[i].collision(player1.ReturnShot()) : false;
+                    let collision2 = player2 != null ? balls[i].collision(player2.ReturnShot()) : false;
                     try {
                         if (collision1 !== false) {
                             balls[i] = new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], 1);
@@ -89,24 +88,11 @@ export default class GameCanvas {
                     } catch (error) {
                         balls.splice(i, 1);
                     }
-
                     try {
-
-
-
-                    } catch {
-
-
-                    }
-
-
-
-
-
-
+                        player1 != null ? balls[i].collision(player1) ? lifesPlayer1-- : {} : {};
+                        player2 != null ? balls[i].collision(player2) ? lifesPlayer2-- : {} : {};
+                    } catch (error) {}
                 }
-                window.requestAnimationFrame(render);
-
             } else if (gameisOver) {
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, W, H);
@@ -118,22 +104,22 @@ export default class GameCanvas {
                 player1 = null;
                 player2 = null;
                 balls = null;
-                window.addEventListener("click", function () {
-                    console.log("Restarted")
-                    gameisOver = false;
-                    time = 100;
-                    player1 = new Players(ctx, W, H, HH, HW, "P1");
-                    player2 = new Players(ctx, W, H, HH, HW, "P2");
-                    balls = [new Ball(ctx, H, W, 200, 60, 40, 1)];
-                    lifesPlayer1 = 3;
-                    lifesPlayer2 = 3;
-                })
-                window.requestAnimationFrame(render);
-
+                window.addEventListener("click", restart)
             }
-
+            window.requestAnimationFrame(render);
         }
         render();
+
+        function restart() {
+            console.log(gameisOver)
+            gameisOver = false;
+            time = 120;
+            player1 = new Players(ctx, W, H, "P1");
+            player2 = new Players(ctx, W, H, "P2");
+            balls = [new Ball(ctx, H, W, 200, 60, 40, 1)];
+            lifesPlayer1 = 3;
+            lifesPlayer2 = 3;
+        }
 
         function timer() {
             if (time > 0) {
@@ -161,9 +147,7 @@ export default class GameCanvas {
             ctx.fillText("Player 2", 430, 320);
             //Vidas do Player 2
             ctx.drawImage(lifeImg, lifesPlayer2 * 50, 0, 50, 16, 410, 334, 50, 16);
-            //
-            //
-            //
+            
             //General data
             //Level
             ctx.fillText(`${level}`, 240, 320);
@@ -173,18 +157,16 @@ export default class GameCanvas {
             //Time
             ctx.fillText(`Time: ${time}`, 410, 30)
             ctx.closePath();
-
-
         }
 
         function ArrowPressed(e) {
-            player1.ArrowPressed(e);
-            player2.ArrowPressed(e);
+            player1 != null ? player1.ArrowPressed(e) : {};
+            player2 != null ? player2.ArrowPressed(e) : {};
         }
 
         function ArrowReleased(e) {
-            player1.ArrowReleased(e);
-            player2.ArrowReleased(e);
+            player1 != null ? player1.ArrowReleased(e) : {};
+            player2 != null ? player2.ArrowReleased(e) : {};
         }
         window.addEventListener('keydown', ArrowPressed);
         window.addEventListener('keyup', ArrowReleased);
