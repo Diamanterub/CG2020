@@ -10,7 +10,7 @@ export default class GameCanvas {
         const W = canvas.width;
         const H = canvas.height;
 
-        let background = new Background(ctx, "B1");
+        let background;
         let player1 = new Players(ctx, W, H, "P1");
         let player2 = new Players(ctx, W, H, "P2");
         let lifeImg = new Image();
@@ -19,36 +19,13 @@ export default class GameCanvas {
         let points = 0;
         let level = "";
         //Test remove later
-        let levelNum = 3;
+        let levelNum = 1;
         let time = 120;
         let gameisOver = false;
         let lifesPlayer1 = 3;
         let lifesPlayer2 = 3;
-        //Test provalvelmente remover depois
-
-        //Recebe o numero do nivel do menu e identifica o nome do level
-
-        switch (levelNum) {
-            case 1:
-                ////Placeholder Missing/Not official name
-                level = "Village";
-                break;
-            case 2:
-                //Placeholder Missing/Not official name
-                level = "Ruins"
-                break;
-            case 3:
-                //Placeholder Missing/Not official name
-                level = "Waterfall"
-                balls = [new Ball(ctx, H, W, 200, 60, 40, 1)]; // Isto tem de ter variáveis
-                setInterval(timer, 1000);
-                break;
-
-            default:
-
-                break;
-        }
-
+        setInterval(timer,1000);
+        levelMech(levelNum)
         // Funções
         function render() {
             // Apaga a cada renderização de modo a atualizar os frames
@@ -96,6 +73,24 @@ export default class GameCanvas {
                         player2 != null ? balls[i].collision(player2) ? lifesPlayer2-- : {} : {};
                     } catch (error) {}
                 }
+                if (balls.length == 0) {
+
+                    if (levelNum < 3) {
+                        levelNum++;
+                        player1 = null;
+                        player2 = null;
+                        levelMech(levelNum);
+                        restart()
+                    } else {
+                        ctx.fillStyle = "black";
+                        ctx.fillRect(0, 0, W, H);
+                        ctx.fillStyle = "white";
+                        ctx.font = "20px retrogf"
+                        ctx.fillText("Well Done", 240, 180);
+                        ctx.font = "14px retrogf"
+                        ctx.fillText("You beat the game", 240, 220);
+                    }
+                }
             } else if (gameisOver) {
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, W, H);
@@ -120,10 +115,38 @@ export default class GameCanvas {
             time = 120;
             player1 = new Players(ctx, W, H, "P1");
             player2 = new Players(ctx, W, H, "P2");
-            balls = [new Ball(ctx, H, W, 200, 60, 40, 1)];
             lifesPlayer1 = 3;
             lifesPlayer2 = 3;
+            levelMech(levelNum)
         }
+        function levelMech(id)
+        {            
+            switch (id) {
+                case 1:
+                    level = "Village-1";
+                    background = new Background(ctx, "B1");
+                    balls = [new Ball(ctx, H, W, 200, 60, 40, 1)];
+                    break;
+                case 2:
+                    level = "Ruins-2"
+                    background = new Background(ctx, "B2");
+                    balls = [new Ball(ctx, H, W, 100, 60, 40, 1)];
+                    balls.push(new Ball(ctx, H, W, 300, 60, 40, 1));
+                    break;
+                case 3:
+                    level = "Waterfall-3"
+                    background = new Background(ctx, "B3");
+                    balls = [new Ball(ctx, H, W, 100, 60, 40, 1)];
+                    balls.push(new Ball(ctx, H, W, 200, 60, 40, 1));
+                    balls.push(new Ball(ctx, H, W, 300, 60, 40, 1)); 
+                    break;
+
+                default:
+    
+                    break;
+            }
+        }
+        
 
         function timer() {
             if (time > 0) {
