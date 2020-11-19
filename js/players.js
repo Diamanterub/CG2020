@@ -53,7 +53,7 @@ export default class Player1 {
         this.X = this.Player.StartPos; // Posição do Player 1 relativa a largura do ambiente
 
         this.HH = 47; // Altura da Hitbox e das personagens
-        this.HW = 73; // Largura da hitbox e das personagens
+        this.HW = 57; // Largura da hitbox e das personagens
         this.pRMSB = 0; // Player Right Movement Sprite and Breath
         this.pLMSB = 17; // Player Left Movement Sprite and Breath
         this.pHWRS = 2; // Player Harpoon While Right Sprite
@@ -126,12 +126,14 @@ export default class Player1 {
             LeftAdj += Center;
         }
         // HITBOX
+        // let align = Center*1.3;
+        // align += this.RightMove ? 0 : 2;
         // this.ctx.beginPath()
-        // this.ctx.moveTo(this.X - this.HW / 2 + Center, this.H - this.HH - 70)
-        // this.ctx.lineTo(this.X + Center, this.H - this.HH - 70)
-        // this.ctx.lineTo(this.X + Center, this.H - 70)
-        // this.ctx.lineTo(this.X - this.HW / 2 + Center, this.H - 70)
-        // this.ctx.lineTo(this.X - this.HW / 2 + Center, this.H - this.HH  - 70)
+        // this.ctx.moveTo(this.X - this.HW / 2 + align, this.H - this.HH - 70)
+        // this.ctx.lineTo(this.X + align, this.H - this.HH - 70)
+        // this.ctx.lineTo(this.X + align, this.H - 70)
+        // this.ctx.lineTo(this.X - this.HW / 2 + align, this.H - 70)
+        // this.ctx.lineTo(this.X - this.HW / 2 + align, this.H - this.HH  - 70)
         // this.ctx.stroke()
         if (!this.invencFrame) {
             this.ctx.beginPath();
@@ -145,11 +147,11 @@ export default class Player1 {
         this.ctx.fillStyle = this.Player.Color;
         this.ctx.textAlign = 'center';
         this.ctx.font = "10px retrogf"
-        this.ctx.fillText(this.P, this.X - 6, this.H - 120);
+        this.ctx.fillText(this.P, this.X, this.H - 120);
         this.ctx.fill();
         this.ctx.closePath();
         // Limitação vertical relativa a área do canvas
-        if (this.rightKey && this.X < this.W - this.HW + this.HW / 2 - Center - Border) this.X = +this.X + this.speed;
+        if (this.rightKey && this.X < this.W - Center - Border) this.X = +this.X + this.speed;
         if (this.leftKey && this.X > 0 + this.HW / 2 - Center + Border) this.X = +this.X - this.speed;
     }
 
@@ -188,9 +190,9 @@ export default class Player1 {
                 break;
             case this.Player.UpKey[0]:
             case this.Player.UpKey[1]:
-                if (this.ReturnShot() == null && !this.invencibility) {
+                if (this.ReturnShot() == null) {
                     this.startHarpoonAnimation();
-                    this.CreateHarpoon(this.RightMove ? this.X : this.X + 15, this.H - this.HH - 70, this.ctx);
+                    this.CreateHarpoon(this.RightMove ? this.X - 15 : this.X, this.H - this.HH - 70, this.ctx);
                     await this.sleep(480);
                     this.stopHarpoonAnimation();
                 }
@@ -213,6 +215,8 @@ export default class Player1 {
 
     collision(ball_x, ball_y, ball_d) {
         let Center = 11; // Variável igual ao Center no Desenho()
+        let align = Center*1.3; // Alinhar a hitbox com o jogador
+        align += this.RightMove ? 0 : 2; // Correção Esquerda/Direita
         if (ball_x + ball_d < this.X - this.HW / 2 + Center // Completamente à esquerda
         || ball_x > this.X + Center // Completamente à direita
         || ball_y + ball_d < this.H - this.HH - 70 // Completamente acima

@@ -9,7 +9,7 @@ export default class Ball {
         this.pop; // Quantidade a subtrair ao tamanho quando rebenta
         this.jump; //altura a que cada bola deve subir
         this.sX, this.sY; // ponto "0, 0" no sprite para se desenhar a bola
-        this.value;
+        this.points; // pontuação dada por rebentar a bola
         try { this.set(); // define as variáveis
         } catch (error) { throw(error); } // ou cancela a criação da bola
         this.angle = 75;
@@ -29,6 +29,7 @@ export default class Ball {
                 this.sX = 0;
                 this.sY = 0;
                 this.pop = 14;
+                this.points = 100;
                 break;
                 
             case 26:
@@ -36,6 +37,7 @@ export default class Ball {
                 this.sX = 41;
                 this.sY = 7;
                 this.pop = 12;
+                this.points = 200;
                 break;
         
             case 14:
@@ -43,6 +45,7 @@ export default class Ball {
                 this.sX = 68;
                 this.sY = 13;
                 this.pop = 7;
+                this.points = 300;
                 break;
                 
             case 7:
@@ -50,6 +53,7 @@ export default class Ball {
                 this.sX = 83;
                 this.sY = 16;
                 this.pop = 1;
+                this.points = 400;
                 break;
 
             default:
@@ -83,7 +87,7 @@ export default class Ball {
     }
     collision(entity) {
         if (entity != null) {
-            return entity.collision(this.x, this.y, this.d) ? [this.x, this.y, this.d, this.pop] : false;
+            return entity.collision(this.x, this.y, this.d) ? [this.x, this.y, this.d, this.pop, this.points] : false;
         } else {
             return false;
         }
