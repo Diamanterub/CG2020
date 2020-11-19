@@ -80,10 +80,12 @@ export default class GameCanvas {
                         if (collision1 !== false) {
                             balls[i] = new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], 1);
                             balls.push(new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], -1));
+                            points += collision1[4];
                         }
                         if (collision2 !== false) {
                             balls[i] = new Ball(ctx, H, W, collision2[0], collision2[1], collision2[2] - collision2[3], 1);
                             balls.push(new Ball(ctx, H, W, collision2[0], collision2[1], collision2[2] - collision2[3], -1));
+                            points += collision2[4];
                         }
                     } catch (error) {
                         balls.splice(i, 1);
@@ -104,6 +106,7 @@ export default class GameCanvas {
                 player1 = null;
                 player2 = null;
                 balls = null;
+                points = 0;
                 window.addEventListener("click", restart)
             }
             window.requestAnimationFrame(render);
