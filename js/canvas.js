@@ -1,6 +1,8 @@
 import Players from './players.js';
 import Background from './background.js';
 import Ball from './ball.js';
+import PowerUp from './powerup.js';
+import Player1 from './players.js';
 
 export default class GameCanvas {
     constructor() {
@@ -26,6 +28,7 @@ export default class GameCanvas {
         let lifesPlayer2 = 3;
         setInterval(timer,1000);
         levelMech(levelNum);
+        let powerups = [];
 
         // Funções
         function render() {
@@ -48,6 +51,24 @@ export default class GameCanvas {
                 if (lifesPlayer1 == 0 && lifesPlayer2 == 0) {
                     gameisOver = true;
                 }
+                if (powerups.length > 0) {
+                    for (let i = 0; i < powerups.length; i++) {
+                        powerups[i].update();
+                        powerups[i].draw();
+                        if (player1 != null) {
+                            if (powerups[i].collision(player1)) {
+                                powerups[i].power != "life" ? CatchPowerUp(powerups[i].power, player1) : CatchPowerUp(powerups[i].power, 1);
+                                powerups.splice(i, 1); continue;
+                            }
+                        }
+                        if (player2 != null) {
+                            if (powerups[i].collision(player2)) {
+                                powerups[i].power != "life" ? CatchPowerUp(powerups[i].power, player2) : CatchPowerUp(powerups[i].power, 2);
+                                powerups.splice(i, 1); continue;
+                            }
+                        }
+                    }
+                }
                 infoBar();
                 for (let i = balls.length - 1; i >= 0; i--) {
                     balls[i].update();
@@ -57,12 +78,14 @@ export default class GameCanvas {
                     try {
                         if (collision1 !== false) {
                             points += collision1[4];
+                            createPowerUp(collision1[0], collision1[1]);
                             balls[i] = new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], 1, collision1[5]);
                             balls.push(new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], -1, collision1[5]));
-                            break;
+                            continue;
                         }
                         if (collision2 !== false) {
                             points += collision2[4];
+                            createPowerUp(collision2[0], collision2[1]);
                             balls[i] = new Ball(ctx, H, W, collision2[0], collision2[1], collision2[2] - collision2[3], 1, collision2[5]);
                             balls.push(new Ball(ctx, H, W, collision2[0], collision2[1], collision2[2] - collision2[3], -1, collision2[5]));
                         }
@@ -109,7 +132,6 @@ export default class GameCanvas {
         render();
 
         function restart() {
-            console.log(gameisOver)
             gameisOver = false;
             time = 120;
             player1 = new Players(ctx, W, H, "P1");
@@ -138,10 +160,6 @@ export default class GameCanvas {
                     balls = [new Ball(ctx, H, W, 100, 60, 40, 1, 88)];
                     balls.push(new Ball(ctx, H, W, 200, 60, 40, 1, 88));
                     balls.push(new Ball(ctx, H, W, 300, 60, 40, 1, 88)); 
-                    break;
-
-                default:
-    
                     break;
             }
         }
@@ -195,6 +213,16 @@ export default class GameCanvas {
         }
         window.addEventListener('keydown', ArrowPressed);
         window.addEventListener('keyup', ArrowReleased);
+
+        //POWERUPS
+        function createPowerUp(x, y) {
+            if (Math.round(Math.random() * 10) < 3)
+            {
+                const powers = ["speed","invenc","fastfire","slow","time","life"];
+                const index = Math.round(Math.random() * 6);
+                powerups.push(new PowerUp(x, y, powers[index], ctx, H));
+            }
+        }
 
         async function CatchPowerUp(power, player) {
             switch (power) {
