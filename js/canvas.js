@@ -79,7 +79,6 @@ export default class GameCanvas {
                         levelNum++;
                         player1 = null;
                         player2 = null;
-                        levelMech(levelNum);
                         restart()
                     } else {
                         ctx.fillStyle = "black";
