@@ -26,7 +26,7 @@ export default class Harpoon {
         }
     }
 
-    collision(ball_x, ball_y, ball_d) {
+    collision(ball_x, ball_y, ball_d, ball) {
         if (ball_x + ball_d < this.dx || ball_x > this.dx + this.sw || ball_y + ball_d < this.dy) {
             return false;
         } else {

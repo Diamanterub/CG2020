@@ -1,0 +1,14 @@
+All files were edited.
+Free for personal use or not specified copyrights.
+/*
+[fastfire.png | slow.png | time.png] 
+https://www.spriters-resource.com/arcade/pangbusterbrospompingworld/sheet/109438/
+[speed.png]
+https://www.pinterest.pt/pin/494903446532318130/
+[invencibility.png]
+https://www.spriters-resource.com/fullview/112411/
+[life.png]
+https://opengameart.org/content/heart-pixel-art
+
+
+
