@@ -9,58 +9,87 @@ export default class GameCanvas {
 
         const W = canvas.width;
         const H = canvas.height;
-        const HH = 47; // Altura da Hitbox e das personagens
-        const HW = 37; // Largura da hitbox e das personages
 
-        let background = new Background(ctx, "B1");
-        let player1 = new Players(ctx, W, H, HH, HW, "P1");
-        let player2 = new Players(ctx, W, H, HH, HW, "P2");
-        let ball = new Ball(ctx,H,W,200,60,20) // Isto tem de ter variáveis
+        let background;
+        let player1 = new Players(ctx, W, H, "P1");
+        let player2 = new Players(ctx, W, H, "P2");
+        let lifeImg = new Image();
+        lifeImg.src = "../imgs/lives.png";
+        let balls = [];
         let points = 0;
         let level = "";
         //Test remove later
-        let levelNum = 3;
-        let time = 100;
+        let levelNum = 1;
+        let time = 120;
         let gameisOver = false;
-        //Test provalvelmente remover depois
-
-        //Recebe o numero do nivel do menu e identifica o nome do level
-
-        switch (levelNum) {
-            case 1:
-                ////Placeholder Missing/Not official name
-                level = "Village";
-                break;
-            case 2:
-                //Placeholder Missing/Not official name
-                level = "Ruins"
-                break;
-            case 3:
-                //Placeholder Missing/Not official name
-                level = "Waterfall"
-                setInterval(timer, 1000);
-                break;
-
-            default:
-
-                break;
-        }
+        let lifesPlayer1 = 3;
+        let lifesPlayer2 = 3;
+        setInterval(timer,1000);
+        levelMech(levelNum);
 
         // Funções
         function render() {
             // Apaga a cada renderização de modo a atualizar os frames
             ctx.clearRect(0, 0, W, H);
             if (!gameisOver) {
+                window.removeEventListener("click", restart);
                 // Background
                 background.Draw();
+                if (lifesPlayer1 == 0) {
+                    player1 = null;
+                } else {
+                    player1.Desenho();
+                }
+                if (lifesPlayer2 == 0) {
+                    player2 = null;
+                } else {
+                    player2.Desenho();
+                }
+                if (lifesPlayer1 == 0 && lifesPlayer2 == 0) {
+                    gameisOver = true;
+                }
                 infoBar();
-                player2.Desenho();
-                player1.Desenho();
-                ball.update();
-                ball.draw();
-                //ball.checker();
-                window.requestAnimationFrame(render);
-
+                for (let i = balls.length - 1; i >= 0; i--) {
+                    balls[i].update();
+                    balls[i].draw();
+                    let collision1 = player1 != null ? balls[i].collision(player1.ReturnShot()) : false;
+                    let collision2 = player2 != null ? balls[i].collision(player2.ReturnShot()) : false;
+                    try {
+                        if (collision1 !== false) {
+                            points += collision1[4];
+                            balls[i] = new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], 1, collision1[5]);
+                            balls.push(new Ball(ctx, H, W, collision1[0], collision1[1], collision1[2] - collision1[3], -1, collision1[5]));
+                            break;
+                        }
+                        if (collision2 !== false) {
+                            points += collision2[4];
+                            balls[i] = new Ball(ctx, H, W, collision2[0], collision2[1], collision2[2] - collision2[3], 1, collision2[5]);
+                            balls.push(new Ball(ctx, H, W, collision2[0], collision2[1], collision2[2] - collision2[3], -1, collision2[5]));
+                        }
+                    } catch (error) {
+                        balls.splice(i, 1);
+                    }
+                    try {
+                        player1 != null ? balls[i].collision(player1) ? lifesPlayer1-- : {} : {};
+                        player2 != null ? balls[i].collision(player2) ? lifesPlayer2-- : {} : {};
+                    } catch (error) {}
+                }
+                if (balls.length == 0) {
+                    if (levelNum < 3) {
+                        levelNum++;
+                        player1 = null;
+                        player2 = null;
+                        restart()
+                    } else {
+                        ctx.fillStyle = "black";
+                        ctx.fillRect(0, 0, W, H);
+                        ctx.fillStyle = "white";
+                        ctx.font = "20px retrogf"
+                        ctx.fillText("Well Done", 240, 180);
+                        ctx.font = "14px retrogf"
+                        ctx.fillText("You beat the game", 240, 220);
+                    }
+                }
             } else if (gameisOver) {
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, W, H);
@@ -69,22 +98,54 @@ export default class GameCanvas {
                 ctx.fillText("Game Over", 240, 180);
                 ctx.font = "14px retrogf"
                 ctx.fillText("Insert coin", 240, 220);
-                player1 = null
-                player2 = null
-                window.addEventListener("click", function () {
-                    console.log("Restarted")
-                    gameisOver = false;
-                    time = 100;
-                    player1 = new Players(ctx, W, H, HH, HW, "P1");
-                    player2 = new Players(ctx, W, H, HH, HW, "P2");
-                })
-                window.requestAnimationFrame(render);
-
+                player1 = null;
+                player2 = null;
+                balls = null;
+                points = 0;
+                window.addEventListener("click", restart)
             }
-
+            window.requestAnimationFrame(render);
         }
         render();
 
+        function restart() {
+            console.log(gameisOver)
+            gameisOver = false;
+            time = 120;
+            player1 = new Players(ctx, W, H, "P1");
+            player2 = new Players(ctx, W, H, "P2");
+            lifesPlayer1 = 3;
+            lifesPlayer2 = 3;
+            levelMech(levelNum)
+        }
+        
+        function levelMech(id) {            
+            switch (id) {
+                case 1:
+                    level = "Village-1";
+                    background = new Background(ctx, "B1");
+                    balls = [new Ball(ctx, H, W, 200, 60, 40, 1, 0)];
+                    break;
+                case 2:
+                    level = "Ruins-2"
+                    background = new Background(ctx, "B2");
+                    balls = [new Ball(ctx, H, W, 100, 60, 40, 1, 44)];
+                    balls.push(new Ball(ctx, H, W, 300, 60, 40, 1, 44));
+                    break;
+                case 3:
+                    level = "Waterfall-3"
+                    background = new Background(ctx, "B3");
+                    balls = [new Ball(ctx, H, W, 100, 60, 40, 1, 88)];
+                    balls.push(new Ball(ctx, H, W, 200, 60, 40, 1, 88));
+                    balls.push(new Ball(ctx, H, W, 300, 60, 40, 1, 88)); 
+                    break;
+
+                default:
+    
+                    break;
+            }
+        }
+        
         function timer() {
             if (time > 0) {
                 time--;
@@ -104,15 +165,14 @@ export default class GameCanvas {
             ctx.fillStyle = "white";
             ctx.font = "12px retrogf"
             //Player1
-            ctx.fillText(`Player 1`, 50, 320);
-            //Faltam fazer as vidas
-            
+            ctx.fillText("Player 1", 50, 320);
+            //Vidas do Player 1
+            ctx.drawImage(lifeImg, lifesPlayer1 * 50, 0, 50, 16, 20, 334, 50, 16);
             //Player2
-            ctx.fillText(`Player 2`, 430, 320);
-            //Faltam fazer as vidas
-
-            //
-            //
+            ctx.fillText("Player 2", 430, 320);
+            //Vidas do Player 2
+            ctx.drawImage(lifeImg, lifesPlayer2 * 50, 0, 50, 16, 410, 334, 50, 16);
+            
             //General data
             //Level
             ctx.fillText(`${level}`, 240, 320);
@@ -122,20 +182,59 @@ export default class GameCanvas {
             //Time
             ctx.fillText(`Time: ${time}`, 410, 30)
             ctx.closePath();
-
-
         }
 
         function ArrowPressed(e) {
-            player1.ArrowPressed(e);
-            player2.ArrowPressed(e);
+            player1 != null ? player1.ArrowPressed(e) : {};
+            player2 != null ? player2.ArrowPressed(e) : {};
         }
 
         function ArrowReleased(e) {
-            player1.ArrowReleased(e);
-            player2.ArrowReleased(e);
+            player1 != null ? player1.ArrowReleased(e) : {};
+            player2 != null ? player2.ArrowReleased(e) : {};
         }
         window.addEventListener('keydown', ArrowPressed);
         window.addEventListener('keyup', ArrowReleased);
+
+        async function CatchPowerUp(power, player) {
+            switch (power) {
+                case "speed":
+                    player.PowerUps("speed", true);
+                    await sleep(3000);
+                    player.PowerUps("speed", false);
+                    break;
+    
+                case "invenc":
+                    player.PowerUps("invenc");
+                    break;
+    
+                case "fastfire":
+                    player.PowerUps("fastfire", true);
+                    await sleep(3000);
+                    player.PowerUps("fastfire", false);
+                    break;
+
+                case "slow":
+                    balls.forEach(ball => { ball.PowerUpSlow(true); });
+                    await sleep(3000)
+                    balls.forEach(ball => { ball.PowerUpSlow(false); });
+                    break;
+
+                case "time":
+                    time += 15;
+                    break;
+
+                case "life":
+                    player == 1 ? 
+                    lifesPlayer1 += lifesPlayer1 < 3 ? 1 : 0
+                    : lifesPlayer2 += lifesPlayer2 < 3 ? 1 : 0;
+                    break;
+            }
+        }
+
+        // Função de espera
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
     }
 }
