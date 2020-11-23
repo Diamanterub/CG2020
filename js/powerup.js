@@ -8,17 +8,16 @@ export default class PowerUp {
         this.powerSprite = new Image();
         this.powerSprite.scr = '../imgs/slow.png';
     }
-    async draw() {
+    draw() {
         this.ctx.beginPath()
-        this.ctx.fillStyle = "white";
         this.ctx.moveTo(this.x, this.y)
         this.ctx.lineTo(this.x + 26, this.y)
         this.ctx.lineTo(this.x + 26, this.y + 26)
         this.ctx.lineTo(this.x, this.y + 26)
         this.ctx.lineTo(this.x, this.y)
-        this.ctx.fill()
-        this.ctx.beginPath();
-        this.ctx.drawImage(this.powerSprite, this.x, this.y);
+        this.ctx.stroke()
+        this.ctx.drawImage(this.powerSprite, 0, 0, 26, 26, this.x, this.y, 26, 26)
+        this.ctx.closePath()
     }
     update() {
         if (this.y + 26 > this.H - 60 - 10) {
