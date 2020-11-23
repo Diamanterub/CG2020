@@ -6,7 +6,7 @@ export default class PowerUp {
         this.H = H;
         this.power = power;
         this.powerSprite = new Image();
-        this.powerSprite.scr = '../imgs/slow.png';
+        this.powerSprite.src = '../imgs/slow.png';
     }
     draw() {
         this.ctx.beginPath()
@@ -16,7 +16,7 @@ export default class PowerUp {
         this.ctx.lineTo(this.x, this.y + 26)
         this.ctx.lineTo(this.x, this.y)
         this.ctx.stroke()
-        this.ctx.drawImage(this.powerSprite, 0, 0, 26, 26, this.x, this.y, 26, 26)
+        this.ctx.drawImage(this.powerSprite, 0, 0, 26, 26, this.x, this.y, 26, 26) /* Usa este para todos, mudas só a source */
         this.ctx.closePath()
     }
     update() {
