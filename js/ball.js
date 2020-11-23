@@ -90,7 +90,7 @@ export default class Ball {
     }
     collision(entity) {
         if (entity != null) {
-            return entity.collision(this.x, this.y, this.d) ? [this.x, this.y, this.d, this.pop, this.points, this.c] : false;
+            return entity.collision(this.x, this.y, this.d, "ball") ? [this.x, this.y, this.d, this.pop, this.points, this.c] : false;
         } else {
             return false;
         }
@@ -99,7 +99,7 @@ export default class Ball {
     PowerUpSlow(state) {
         if (state) {
             this.slow = 2;
-            this.fixSlow = 1.2;
+            this.fixSlow = 1.3;
         } else {
             this.slow = 1;
             this.fixSlow = 1;    
