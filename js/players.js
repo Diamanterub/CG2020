@@ -68,6 +68,7 @@ export default class Player1 {
 
         this.CreateHarpoon = function (x, y) {
             shot = new Harpoons(x, y, this.ctx, this.fireRate);
+
             function FireHarpoon() {
                 if (shot.update()) {
                     shot.draw();
@@ -79,7 +80,9 @@ export default class Player1 {
             FireHarpoon();
         }
 
-        this.ReturnShot = function () { return shot; }
+        this.ReturnShot = function () {
+            return shot;
+        }
 
         this.RightMove = this.Player.StartRight; // Por default, o Player 1 está virado para o lado direito
         this.LeftMove = this.Player.StartLeft; // e estas variáveis servem para distinguir a que lado o jogador está virado.
@@ -90,8 +93,12 @@ export default class Player1 {
 
         // Para a animação do arpão em 1 segundo são dados 28 frames, mas definimos o tempo para 480ms, sendo usados 13 frames.
         this.startHarpoonAnimation = function () {
-            timerRight = setInterval(() => { this.PHWRS() }, 1000 / 28);
-            timerLeft = setInterval(() => { this.PHWLS() }, 1000 / 28);
+            timerRight = setInterval(() => {
+                this.PHWRS()
+            }, 1000 / 28);
+            timerLeft = setInterval(() => {
+                this.PHWLS()
+            }, 1000 / 28);
         }
         // Após passar 480ms, esta função é executada para parar a animação do arpão
         this.stopHarpoonAnimation = function () {
@@ -101,8 +108,12 @@ export default class Player1 {
     }
     // São acionadas as funções para o movimento e respiração da personagem.
     myInit() {
-        setInterval(() => { this.PRMSB() }, 1000 / 2),
-        setInterval(() => { this.PLMSB() }, 1000 / 2)
+        setInterval(() => {
+                this.PRMSB()
+            }, 1000 / 2),
+            setInterval(() => {
+                this.PLMSB()
+            }, 1000 / 2)
     }
 
     Desenho() {
@@ -216,11 +227,13 @@ export default class Player1 {
 
     collision(ent_x, ent_y, ent_d, type) {
         let Center = 11; // Variável igual ao Center no Desenho()
-        let align = Center*1.3; // Alinhar a hitbox com o jogador
+        let align = Center * 1.3; // Alinhar a hitbox com o jogador
         align += this.RightMove ? 0 : 2; // Correção Esquerda/Direita
         if (ent_x + ent_d < this.X - this.HW / 2 + align // Completamente à esquerda
-        || ent_x > this.X + align // Completamente à direita
-        || ent_y + ent_d < this.H - this.HH - 70) { // Completamente acima
+            ||
+            ent_x > this.X + align // Completamente à direita
+            ||
+            ent_y + ent_d < this.H - this.HH - 70) { // Completamente acima
             return false;
         } else {
             if (type == "ball") {
@@ -237,7 +250,9 @@ export default class Player1 {
 
     async hit() {
         this.invencibility = true;
-        let flash = setInterval(() => { this.invencFrame = !this.invencFrame; }, 100);
+        let flash = setInterval(() => {
+            this.invencFrame = !this.invencFrame;
+        }, 100);
         await this.sleep(3000);
         this.invencibility = false;
         clearInterval(flash);
