@@ -219,7 +219,7 @@ export default class GameCanvas {
             if (Math.round(Math.random() * 10) < 3)
             {
                 const powers = ["speed","invenc","fastfire","slow","time","life"];
-                const index = Math.round(Math.random() * 6);
+                const index = Math.floor(Math.random() * 5.9);
                 powerups.push(new PowerUp(x, y, powers[index], ctx, H));
             }
         }
