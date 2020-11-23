@@ -215,20 +215,23 @@ export default class Player1 {
     }
 
     collision(ent_x, ent_y, ent_d, type) {
-        if (!this.invencibility) {  // Invencivel
-            let Center = 11; // Variável igual ao Center no Desenho()
-            let align = Center*1.3; // Alinhar a hitbox com o jogador
-            align += this.RightMove ? 0 : 2; // Correção Esquerda/Direita
-            if (ent_x + ent_d < this.X - this.HW / 2 + align // Completamente à esquerda
-            || ent_x > this.X + align // Completamente à direita
-            || ent_y + ent_d < this.H - this.HH - 70) { // Completamente acima
-                return false;
-            } else {
-                type == "ball" ? this.hit() : {};
-                return true;
+        let Center = 11; // Variável igual ao Center no Desenho()
+        let align = Center*1.3; // Alinhar a hitbox com o jogador
+        align += this.RightMove ? 0 : 2; // Correção Esquerda/Direita
+        if (ent_x + ent_d < this.X - this.HW / 2 + align // Completamente à esquerda
+        || ent_x > this.X + align // Completamente à direita
+        || ent_y + ent_d < this.H - this.HH - 70) { // Completamente acima
+            return false;
+        } else {
+            if (type == "ball") {
+                if (!this.invencibility) { // Invencivel
+                    this.hit();
+                    return true;
+                } else {
+                    return false;
+                }
             }
-        } else { 
-            return type == "power";
+            return true;
         }
     }
 
