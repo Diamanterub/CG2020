@@ -6,7 +6,11 @@ body {
     background-image: url('../imgs/teste.jpg');
     background-repeat: no-repeat;
 }
-
+svg{
+    opacity: 1; /* Não consegui comentar todo o SVG, por isso meti a opacidade a 0,
+    mas a animação está a funcionar. Quando estiver mais organizado, tirem este <style>
+    e falta adicionar js para o click dos textos opções.*/
+}
 #game {
     position: absolute;
     top: 0;

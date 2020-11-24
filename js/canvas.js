@@ -142,7 +142,7 @@ export default class GameCanvas {
         function levelMech(id) {            
             switch (id) {
                 case 1:
-                    level = "Village-1";
+                    level = "Forrest-1";
                     background = new Background(ctx, "B1");
                     balls = [new Ball(ctx, H, W, 200, 60, 40, 1, 0)];
                     points[0] = 0;
