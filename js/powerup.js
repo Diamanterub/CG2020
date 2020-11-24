@@ -12,7 +12,7 @@ export default class PowerUp {
         this.ctx.beginPath()
         this.ctx.fillStyle = "rgba(200, 200, 200, 0.4)";
         this.ctx.arc(this.x + 13, this.y + 13, 13, 0, 2 * Math.PI);
-        this.ctx.stroke();
+        this.ctx.fill();
         this.ctx.drawImage(this.powerSprite, 0, 0, 26, 26, this.x, this.y, 26, 26)
         this.ctx.closePath()
     }

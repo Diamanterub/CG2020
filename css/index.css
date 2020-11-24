@@ -20,3 +20,7 @@ body {
     font-family: retrogf;
     src: url("amiga4everpro2.ttf"); /* A fonte apenas não pode ser utilizada para uso comercial. */
 }
+@font-face {
+    font-family: psfont;
+    src: url("OptimusPrincepsSemiBold.ttf"); /* Fonte de uso livre */
+}
