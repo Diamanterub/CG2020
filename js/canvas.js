@@ -4,7 +4,9 @@ import Ball from './ball.js';
 import PowerUp from './powerup.js';
 
 export default class GameCanvas {
-    constructor() {
+    constructor(n) {
+        //n = Vidas do jogador 2 (0 se 1 Player, 3 se 2 Players)
+
         const canvas = document.querySelector('#game');
         const ctx = canvas.getContext("2d");
 
@@ -23,12 +25,13 @@ export default class GameCanvas {
         let time = 120;
         let gameisOver = false;
         let lifesPlayer1 = 3;
-        let lifesPlayer2 = 3;
+        let lifesPlayer2 = n;
         setInterval(timer,1000);
         levelMech(levelNum);
         let powerups = [];
 
         // Funções
+        render();
         function render() {
             // Apaga a cada renderização de modo a atualizar os frames
             ctx.clearRect(0, 0, W, H);
@@ -126,7 +129,6 @@ export default class GameCanvas {
             }
             window.requestAnimationFrame(render);
         }
-        render();
 
         function restart() {
             gameisOver = false;
@@ -135,7 +137,7 @@ export default class GameCanvas {
             player1 = new Players(ctx, W, H, "P1");
             player2 = new Players(ctx, W, H, "P2");
             lifesPlayer1 = 3;
-            lifesPlayer2 = 3;
+            lifesPlayer2 = n;
             levelMech(levelNum)
         }
         
