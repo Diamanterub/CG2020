@@ -106,9 +106,9 @@ export default class GameCanvas {
                         ctx.fillRect(0, 0, W, H);
                         ctx.fillStyle = "white";
                         ctx.font = "20px retrogf"
-                        ctx.fillText("Well Done", 240, 180);
+                        ctx.fillText("Well done", 240, 180);
                         ctx.font = "14px retrogf"
-                        ctx.fillText("You beat the game", 240, 220);
+                        ctx.fillText("You have completed the game", 240, 220);
                     }
                 }
             } else if (gameisOver) {
@@ -118,7 +118,7 @@ export default class GameCanvas {
                 ctx.font = "20px retrogf"
                 ctx.fillText("Game Over", 240, 180);
                 ctx.font = "14px retrogf"
-                ctx.fillText("Insert coin", 240, 220);
+                ctx.fillText("Insert a coin", 240, 220);
                 player1 = null;
                 player2 = null;
                 balls = null;
@@ -142,20 +142,20 @@ export default class GameCanvas {
         function levelMech(id) {            
             switch (id) {
                 case 1:
-                    level = "Forrest-1";
+                    level = "Hibiscus Forest | 1";
                     background = new Background(ctx, "B1");
                     balls = [new Ball(ctx, H, W, 200, 60, 40, 1, 0)];
                     points[0] = 0;
                     break;
                 case 2:
-                    level = "Ruins-2"
+                    level = "Londo Ruins | 2"
                     background = new Background(ctx, "B2");
                     balls = [new Ball(ctx, H, W, 100, 60, 40, 1, 44)];
                     balls.push(new Ball(ctx, H, W, 300, 60, 40, 1, 44));
                     points[1] = points[0];
                     break;
                 case 3:
-                    level = "Waterfall-3"
+                    level = "Mura Waterfall | 3"
                     background = new Background(ctx, "B3");
                     balls = [new Ball(ctx, H, W, 100, 60, 40, 1, 88)];
                     balls.push(new Ball(ctx, H, W, 200, 60, 40, 1, 88));
