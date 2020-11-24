@@ -6,18 +6,12 @@
     <title>Pang</title>
     <!-- Stylesheet -->
     <link rel="stylesheet" href="../css/index.css">
-    <style>
-        svg{
-            opacity: 0; /* Não consegui comentar todo o SVG, por isso meti a opacidade a 0,
-            mas a animação está a funcionar. Quando estiver mais organizado, tirem este <style>
-            e falta adicionar js para o click dos textos opções.*/
-        }
-    </style>
 </head>
 
 <body>
     <!-- Canvas -->
     <canvas id="game" width="480" height="360" style="border:solid 2px rgba(0,0,0,0.5)"></canvas>
+
     <!-- SVG -->
     <svg height="360px" width="480px" style="background-color: black;">
         <style>
@@ -246,9 +240,6 @@
                 </feDropShadow>
             </filter>
         </defs>
-        <rect>
-
-        </rect>
         <image id='background' href="../imgs/PGB_BW.gif" height="360" width="480" opacity="0.6"/> <!-- BACKGROUND GIF -->
         <rect id='effect' height="360" width="480" fill='url(#background-grad)'></rect> <!-- BACKGROUND EFFECT -->
         <text id="one_opt" text-anchor="middle" x="50%" y="65%">1 Player</text> <!-- 1 PLAYER OPTION -->

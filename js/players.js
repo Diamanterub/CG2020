@@ -251,7 +251,7 @@ export default class Player1 {
     PowerUps(power, state) {
         switch (power) {
             case "speed":
-                this.speed = state ? 2 : 1.3;
+                this.speed = state ? 2.3 : 1.3;
                 break;
 
             case "invenc":
