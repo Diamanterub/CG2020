@@ -9,6 +9,15 @@ https://www.pinterest.pt/pin/494903446532318130/
 https://www.spriters-resource.com/fullview/112411/
 [life.png]
 https://opengameart.org/content/heart-pixel-art
+// 
+Vidas:
+https://opengameart.org/content/heart-pixel-art
+Bolas:
+https://www.spriters-resource.com/arcade/pangbusterbrospompingworld/sheet/59986/
+"Frame" do background dos níveis:
+https://www.spriters-resource.com/arcade/pangbusterbrospompingworld/sheet/109427/
+//
+Grande parte dos ficheiros foi editada no Paint, Photoshop e Illustrator.
 
 
 
