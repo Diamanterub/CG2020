@@ -21,7 +21,7 @@ export default class GameCanvas {
         let balls = [];
         let points = [0, 0, 0];
         let level = "";
-        let levelNum = 3;
+        let levelNum = 1;
         let time = 120;
         let gameisOver = false;
         let lifesPlayer1 = 3;
@@ -164,9 +164,9 @@ export default class GameCanvas {
                 case 3:
                     level = "Mura Waterfall | 3"
                     background = new Background(ctx, "B3");
-                    // balls = [new Ball(ctx, H, W, 100, 60, 40, 1, 88)];
-                    // balls.push(new Ball(ctx, H, W, 200, 60, 40, 1, 88));
-                    // balls.push(new Ball(ctx, H, W, 300, 60, 40, 1, 88));
+                    balls = [new Ball(ctx, H, W, 100, 60, 40, 1, 88)];
+                    balls.push(new Ball(ctx, H, W, 200, 60, 40, 1, 88));
+                    balls.push(new Ball(ctx, H, W, 300, 60, 40, 1, 88));
                     points[2] = points[1];
                     break;
             }
