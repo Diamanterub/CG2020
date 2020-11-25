@@ -109,9 +109,14 @@ export default class GameCanvas {
                         ctx.fillRect(0, 0, W, H);
                         ctx.fillStyle = "white";
                         ctx.font = "20px retrogf"
-                        ctx.fillText("Well done", 240, 180);
+                        ctx.fillText("Congratulations!", 240, 140);
                         ctx.font = "14px retrogf"
-                        ctx.fillText("You have completed the game", 240, 220);
+                        ctx.fillText("You've completed the game!", 240, 180);
+                        ctx.fillText("Your score was "+points[2]+" points", 240, 200);
+                        ctx.font = "10px retrogf"
+                        ctx.fillText("Thank you for playing", 240, 240);
+                        ctx.fillText("The page will refresh in 5 seconds", 240, 255);
+                        the_end();
                     }
                 }
             } else if (gameisOver) {
@@ -261,6 +266,11 @@ export default class GameCanvas {
                     : lifesPlayer2 += lifesPlayer2 < 3 ? 1 : 0;
                     break;
             }
+        }
+
+        async function the_end() {
+            await sleep(5000);
+            location.reload();
         }
 
         // Função de espera
